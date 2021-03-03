@@ -7,7 +7,7 @@
 		"url": "https://github.com/lexey111/TMP-host"
 	},
 	"scripts": {
-		"cleanup": "rimraf ../dist",
+		"cleanup": "rimraf ./dist",
 		"start": "webpack serve --config build/webpack.config.js --mode development --host 0.0.0.0",
 		"build": "npm run cleanup && webpack --config build/webpack.config.js --mode production --progress",
 		"build:dev": "webpack --config build/webpack.config.js --mode development --progress",

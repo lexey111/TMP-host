@@ -1,8 +1,8 @@
 module.exports = {
-	app_header: {
+	topbar: {
 		name: 'Application top bar',
-		dist: 'TMP-sub-app-header/dist',
-		entry: 'app-header.js',
-		styles: 'app-header.css'
+		dist: 'TMP-sub-topbar/dist',
+		entry: 'topbar.js',
+		styles: 'topbar.css'
 	}
 };

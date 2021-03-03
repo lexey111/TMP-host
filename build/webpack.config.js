@@ -66,9 +66,10 @@ module.exports = (env, args) => {
 	console.log('Prepare sub-apps...');
 	console.log('===================');
 	const AppsPatterns = [];
-	const subAppList = require('../config/subapps.config');
+	const subAppListToCopy = require('../config/subapps.config');
+	const subAppListForManager = {};
 
-	for (const [app, content] of Object.entries(subAppList)) {
+	for (const [app, content] of Object.entries(subAppListToCopy)) {
 		console.log('Sub-app registered:', app);
 		console.log('Content', content);
 
@@ -82,6 +83,13 @@ module.exports = (env, args) => {
 			from: path.resolve(folder, content.entry),
 			to: path.resolve(outPath, 'scripts/subapps/' + content.entry),
 		});
+
+		subAppListForManager[app] = {
+			path: '/scripts/subapps/',
+			bundle: content.entry,
+			appName: app,
+			stylesheet: '/styles/subapps/' + content.styles || ''
+		};
 
 		if (content.styles) {
 			AppsPatterns.push({
@@ -212,7 +220,7 @@ if (!window.TmpCore || !window.TmpCore.environment) {
 
 window.TmpCore.environment.servicesBundle = '';
 window.TmpCore.environment.uiBundle = '';
-window.TmpCore.environment.subAppList = {};
+window.TmpCore.environment.subAppList = ${JSON.stringify(subAppListForManager)};
 window.TmpCore.environment.availableLocales = [];
 window.TmpCore.environment.availableDictionaries = {};
 

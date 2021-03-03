@@ -6,7 +6,7 @@ import {Layout} from './layout';
 export const App: React.FC = () => {
 	return <Router>
 		<div id={'topbar'}>
-			<SubApp name={'app-header'}/>
+			<SubApp view={'topbar/header'}/>
 		</div>
 
 		<div id={'activity'}>

@@ -45,12 +45,7 @@
 				"builtinGlobals": false
 			}
 		],
-		"no-duplicate-imports": [
-			"error",
-			{
-				"includeExports": true
-			}
-		],
+		"no-duplicate-imports": "off",
 		"no-template-curly-in-string": "error",
 		"block-scoped-var": "error",
 		"curly": [
