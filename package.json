@@ -2,6 +2,10 @@
 	"name": "tmp-host",
 	"version": "1.0.0",
 	"description": "UAC shell application",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/lexey111/TMP-host"
+	},
 	"scripts": {
 		"cleanup": "rimraf ../dist",
 		"start": "webpack serve --config build/webpack.config.js --mode development --host 0.0.0.0",
