@@ -22,10 +22,10 @@
 		"outDir": "./temp",
 		"baseUrl": "./",
 		"paths" : {
-			"TMPCore/*" : ["./node_modules/@lx/TMP-core/src/core/@exports/*"],
-			"TMPCore" : ["./node_modules/@lx/TMP-core/src/core/@exports"],
-			"TMPUILibrary/*" : ["./node_modules/@lx/TMP-core/src/library/*"],
-			"TMPUILibrary" : ["./node_modules/@lx/TMP-core/src/library"]
+			"TMPCore/*" : ["./node_modules/tmp-core/src/core/@exports/*"],
+			"TMPCore" : ["./node_modules/tmp-core/src/core/@exports"],
+			"TMPUILibrary/*" : ["./node_modules/tmp-core/src/library/*"],
+			"TMPUILibrary" : ["./node_modules/tmp-core/src/library"]
 		},
 		"typeRoots": [
 			"node_modules/@types"
