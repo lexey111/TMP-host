@@ -1,0 +1,41 @@
+{
+	"compilerOptions": {
+		"target": "es5",
+		"module": "commonjs",
+		"jsx": "react",
+		"allowJs": true,
+		"allowSyntheticDefaultImports": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"sourceMap": true,
+		"strictNullChecks": false,
+		"removeComments": true,
+		"noImplicitAny": false,
+		"skipLibCheck": true,
+		"suppressImplicitAnyIndexErrors": true,
+		"noUnusedLocals": true,
+		"lib": [
+			"dom",
+			"es2015",
+			"es2017"
+		],
+		"outDir": "./temp",
+		"baseUrl": "./",
+		"paths" : {
+			"TMPCore/*" : ["./node_modules/@lx/TMP-core/src/core/@exports/*"],
+			"TMPCore" : ["./node_modules/@lx/TMP-core/src/core/@exports"],
+			"TMPUILibrary/*" : ["./node_modules/@lx/TMP-core/src/library/*"],
+			"TMPUILibrary" : ["./node_modules/@lx/TMP-core/src/library"]
+		},
+		"typeRoots": [
+			"node_modules/@types"
+		]
+	},
+	"include": [
+		"./src/**/*"
+	],
+	"exclude": [
+		"./src/**/*.js",
+		"node_modules/**/*"
+	]
+}

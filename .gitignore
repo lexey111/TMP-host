@@ -1,0 +1,11 @@
+.idea
+.DS_Store
+node_modules/
+npm-debug.log
+dist/
+tmp/
+temp/
+coverage/
+test-report.xml
+junit-platform.xml
+.eslintcache
