@@ -1,5 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
+const fs = require('fs');
 
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
@@ -9,6 +10,7 @@ const TMPConfig = require('./tmp-build-config');
 const externals = require(TMPConfig.CoreExternals);
 
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const SubAppsBase = './../subapps';
 
 const stats = {
 	assets: true,
@@ -29,7 +31,7 @@ const stats = {
 	performance: false,
 	providedExports: false,
 	publicPath: false,
-	reasons: true,
+	reasons: false,
 	source: false,
 	colors: true,
 	timings: true,
@@ -59,6 +61,37 @@ module.exports = (env, args) => {
 	const sourcePath = path.join(__dirname, '../src');
 	const outPath = path.join(__dirname, '../dist');
 
+	// prepare pre-defined subapps config to copy
+	console.log('');
+	console.log('Prepare sub-apps...');
+	console.log('===================');
+	const AppsPatterns = [];
+	const subAppList = require('../config/subapps.config');
+
+	for (const [app, content] of Object.entries(subAppList)) {
+		console.log('Sub-app registered:', app);
+		console.log('Content', content);
+
+		const folder = path.resolve(SubAppsBase, content.dist);
+
+		if (!fs.existsSync(folder)) {
+			throw new Error(`Output folder for sub-app ${app} not found at ${folder} with base ${SubAppsBase}!`)
+		}
+
+		AppsPatterns.push({
+			from: path.resolve(folder, content.entry),
+			to: path.resolve(outPath, 'scripts/subapps/' + content.entry),
+		});
+
+		if (content.styles) {
+			AppsPatterns.push({
+				from: path.resolve(folder, content.styles),
+				to: path.resolve(outPath, 'styles/subapps/' + content.styles),
+			});
+		}
+	}
+	console.log('');
+
 	const config = {
 		context: sourcePath,
 		entry: {
@@ -68,9 +101,6 @@ module.exports = (env, args) => {
 			path: outPath,
 			publicPath: '',
 			filename: 'app.js',
-			// chunkFilename: 'app_chunk.js'
-			// filename: isProduction ? '[contenthash].js' : '[hash].js',
-			// chunkFilename: isProduction ? '[name].[contenthash].js' : '[name].[hash].js'
 		},
 		target: 'web',
 		externals: {...externals},
@@ -82,7 +112,8 @@ module.exports = (env, args) => {
 			alias: {
 				app: path.resolve(__dirname, 'src/app/'),
 				TMPUILibrary: TMPConfig.UILibrary,
-			}
+				...TMPConfig.lessFiles
+			},
 		},
 		module: {
 			rules: [
@@ -118,15 +149,6 @@ module.exports = (env, args) => {
 				{
 					test: /.(le|c)ss$/i,
 					use: [
-						// 'style-loader',
-						// {
-						// 	loader: 'css-loader',
-						// 	query: {
-						// 		//modules: true,
-						// 		sourceMap: !isProduction,
-						// 		importLoaders: 1,
-						// 	}
-						// },
 						{
 							loader: 'file-loader',
 							options: {
@@ -217,6 +239,7 @@ console.log('Host environment ready');
 						from: path.resolve('./src/assets/loader.js'),
 						to: outPath,
 					},
+					...AppsPatterns
 				]
 			}),
 		],
