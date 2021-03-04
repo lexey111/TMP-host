@@ -38,9 +38,15 @@ export const App: React.FC = () => {
 			<div className={'content-area'}>
 				<div className={'content'}>
 					<Switch>
+
 						<Route path={'/config'}>
 							<ConfigPage/>
 						</Route>
+
+						<Route path={'/manual'}>
+							<SubApp subappView={'template/manual'} className={'app-layout-tc'}/>
+						</Route>
+
 						<Route path={'/'}>
 							<HomePage/>
 						</Route>
