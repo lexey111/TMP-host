@@ -6,50 +6,33 @@ const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const TMPConfig = require('./tmp-build-config');
-const externals = require(TMPConfig.CoreExternals);
-
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const TMPCorePath = 'node_modules/tmp-core';
+const TMPConfigFile = path.resolve(`${TMPCorePath}/src/core/@exports/build-environment.js`);
 const SubAppsBase = './../subapps';
 
-const stats = {
-	assets: true,
-	cached: false,
-	cachedAssets: false,
-	children: false,
-	chunks: false,
-	chunkModules: false,
-	env: true,
-	chunkOrigins: false,
-	depth: false,
-	entrypoints: true,
-	errors: true,
-	errorDetails: true,
-	hash: false,
-	modules: true,
-	moduleTrace: false,
-	performance: false,
-	providedExports: false,
-	publicPath: false,
-	reasons: false,
-	source: false,
-	colors: true,
-	timings: true,
-	usedExports: false,
-	version: true,
-	warnings: true,
-};
+console.log(`Configure TMP-core as ${TMPCorePath}`);
+console.log(`Configure TMP-core config as ${TMPConfigFile}`);
+console.log(`Configure sub-apps base as ${SubAppsBase}`);
+
+if (!fs.existsSync(path.resolve(TMPCorePath))) {
+	throw new Error('TMP Core folder not found!');
+}
+
+if (!fs.existsSync(TMPConfigFile)) {
+	throw new Error('TMP Core config file not found!');
+}
+
+if (!fs.existsSync(path.resolve(SubAppsBase))) {
+	throw new Error('Sub-apps folder not found!');
+}
+
+console.log('Run Core environment preparation...');
+const TMPConfig = require(TMPConfigFile)(TMPCorePath);
 
 module.exports = (env, args) => {
 	let isProduction = false;
-	const isAnalyze = (process.env['npm_lifecycle_script'].indexOf('analyze') !== -1);
-
 	if (args && args['mode'] === 'production') {
 		isProduction = true;
-	}
-
-	if (isAnalyze) {
-		console.log('ANALYZE MODE');
 	}
 
 	if (isProduction) {
@@ -70,7 +53,7 @@ module.exports = (env, args) => {
 	const subAppListForManager = {};
 
 	for (const [app, content] of Object.entries(subAppListToCopy)) {
-		console.log('Sub-app registered:', app);
+		console.log('Local sub-app registered:', app);
 		console.log('Content', content);
 
 		const folder = path.resolve(SubAppsBase, content.dist);
@@ -98,6 +81,7 @@ module.exports = (env, args) => {
 			});
 		}
 	}
+	console.log('===================');
 	console.log('');
 
 	const config = {
@@ -111,16 +95,42 @@ module.exports = (env, args) => {
 			filename: 'app.js',
 		},
 		target: 'web',
-		externals: {...externals},
+		externals: TMPConfig.build.externals,
 		devtool: isProduction ? false : 'source-map',
-		stats,
+		stats: {
+			assets: true,
+			cached: false,
+			cachedAssets: false,
+			children: false,
+			chunks: false,
+			chunkModules: false,
+			env: true,
+			chunkOrigins: false,
+			depth: false,
+			entrypoints: true,
+			errors: true,
+			errorDetails: true,
+			hash: false,
+			modules: true,
+			moduleTrace: false,
+			performance: false,
+			providedExports: false,
+			publicPath: false,
+			reasons: false,
+			source: false,
+			colors: true,
+			timings: true,
+			usedExports: false,
+			version: true,
+			warnings: true,
+		},
 		resolve: {
 			extensions: ['.js', '.ts', '.tsx'],
 			mainFields: ['module', 'browser', 'main'],
 			alias: {
 				app: path.resolve(__dirname, 'src/app/'),
-				TMPUILibrary: TMPConfig.UILibrary,
-				...TMPConfig.lessFiles
+				TMPUILibrary: TMPConfig.paths.UILibrary,
+				...TMPConfig.paths.lessFiles
 			},
 		},
 		module: {
@@ -203,7 +213,7 @@ module.exports = (env, args) => {
 			new CopyWebpackPlugin({
 				patterns: [
 					{
-						from: isProduction ? TMPConfig.dist : TMPConfig.distDev,
+						from: isProduction ? TMPConfig.paths.dist : TMPConfig.paths.distDev,
 						to: outPath,
 					},
 					{
@@ -225,20 +235,9 @@ window.TmpCore.environment.availableLocales = [];
 window.TmpCore.environment.availableDictionaries = {};
 
 console.log('Host environment ready');
-
-
 `;
 						}
 					},
-
-					// {
-					// 	from: path.resolve('./../tmp-subapps/dist'),
-					// 	to: path.join(outPath, 'sub-apps'),
-					// },
-					// {
-					// 	from: path.resolve('./../tmp-i18n'),
-					// 	to: path.join(outPath, 'i18n', 'data'),
-					// },
 					{
 						from: path.resolve('./src/assets/index.html'),
 						to: outPath,
@@ -270,10 +269,6 @@ console.log('Host environment ready');
 			clientLogLevel: 'warning'
 		}
 	};
-
-	if (isAnalyze) {
-		config.plugins.push(new BundleAnalyzerPlugin())
-	}
 
 	if (isProduction) {
 		config.optimization.minimize = true;
