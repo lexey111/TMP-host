@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {App} from './app';
 
-import './assets/shell.less';
+import './styles/shell.less';
 
 ReactDOM.render(
 	<App/>,

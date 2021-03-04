@@ -5,12 +5,14 @@ import {Layout} from './layout';
 
 export const App: React.FC = () => {
 	return <Router>
-		<div id={'topbar'}>
-			<SubApp view={'topbar/header'}/>
-		</div>
+		<SubApp subappView={'topbar/header'} className={'app-topbar'}/>
 
 		<div id={'activity'}>
-			<Layout></Layout>
+			<SubApp subappView={'sidebar/spine'} className={'app-spine'}/>
+
+			<div id={'content'}>
+				<Layout></Layout>
+			</div>
 		</div>
 	</Router>;
 };

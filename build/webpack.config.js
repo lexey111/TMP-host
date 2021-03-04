@@ -67,6 +67,13 @@ module.exports = (env, args) => {
 			to: path.resolve(outPath, 'scripts/subapps/' + content.entry),
 		});
 
+		if (!isProduction) {
+			AppsPatterns.push({
+				from: path.resolve(folder, content.entry + '.map'),
+				to: path.resolve(outPath, 'scripts/subapps/' + content.entry + '.map'),
+			});
+		}
+
 		subAppListForManager[app] = {
 			path: '/scripts/subapps/',
 			bundle: content.entry,
