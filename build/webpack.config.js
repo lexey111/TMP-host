@@ -78,6 +78,7 @@ module.exports = (env, args) => {
 			path: '/scripts/subapps/',
 			bundle: content.entry,
 			appName: app,
+			title: content.name,
 			stylesheet: '/styles/subapps/' + content.styles || ''
 		};
 
@@ -94,12 +95,13 @@ module.exports = (env, args) => {
 	const config = {
 		context: sourcePath,
 		entry: {
-			app: './main.tsx'
+			app: './main.tsx',
+			'scripts/tmp_core_environment': './tmp_core_environment.ts'
 		},
 		output: {
 			path: outPath,
 			publicPath: '',
-			filename: 'app.js',
+			filename: '[name].js',
 		},
 		target: 'web',
 		externals: TMPConfig.build.externals,
@@ -135,7 +137,7 @@ module.exports = (env, args) => {
 			extensions: ['.js', '.ts', '.tsx'],
 			mainFields: ['module', 'browser', 'main'],
 			alias: {
-				app: path.resolve(__dirname, 'src/app/'),
+				// app: path.resolve(__dirname, 'src/app/'),
 				TMPUILibrary: TMPConfig.paths.UILibrary,
 				...TMPConfig.paths.lessFiles
 			},
@@ -213,37 +215,19 @@ module.exports = (env, args) => {
 			runtimeChunk: false,
 		},
 		plugins: [
+			new webpack.DefinePlugin({
+				SUBAPPS: JSON.stringify(subAppListForManager),
+				PRODUCTION: JSON.stringify(isProduction),
+			}),
 			new webpack.EnvironmentPlugin({
 				NODE_ENV: isProduction ? 'production' : 'development', // use 'development' unless process.env.NODE_ENV is defined
-				DEBUG: !isProduction
+				DEBUG: !isProduction,
 			}),
 			new CopyWebpackPlugin({
 				patterns: [
 					{
 						from: isProduction ? TMPConfig.paths.dist : TMPConfig.paths.distDev,
 						to: outPath,
-					},
-					{
-						from: path.resolve('./src/assets/loader.js'), // any file
-						to: path.resolve(outPath, 'scripts/tmp_core_environment.js'),
-						transform() {
-							return `// File was automatically generated at ${new Date()} 
-if (!window.TmpCore || !window.TmpCore.environment) {
-	throw new Error('Global windows.TmpCore object is not ready!');
-}
-
-// window.TmpCore.environment.servicesBundle = 'twf_services_bundle';
-// window.TmpCore.environment.uiBundle = 'twf_ui_bundle';
-
-window.TmpCore.environment.servicesBundle = '';
-window.TmpCore.environment.uiBundle = '';
-window.TmpCore.environment.subAppList = ${JSON.stringify(subAppListForManager)};
-window.TmpCore.environment.availableLocales = [];
-window.TmpCore.environment.availableDictionaries = {};
-
-console.log('Host environment ready');
-`;
-						}
 					},
 					{
 						from: path.resolve('./src/assets/index.html'),

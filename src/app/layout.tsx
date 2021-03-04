@@ -3,8 +3,6 @@ import {TcSmartLayout, TcViewTitle} from 'TMPUILibrary/layout';
 import {TcNavAnchor} from 'TMPUILibrary/navigation';
 import {LipsumPara} from 'TMPUILibrary/ui-elements';
 
-import './layout.less';
-
 export const Layout: React.FC = () => {
 	return <div id={'layout'}>
 		<TcViewTitle>

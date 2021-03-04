@@ -5,13 +5,13 @@ import {LipsumPara} from 'TMPUILibrary/ui-elements';
 import './home.less';
 
 export const HomePage: React.FC = () => {
-	return <>
+	return <div className={'app-layout'}>
 		<TcViewTitle>
 			Home page
 		</TcViewTitle>
 
 		<TcSmartLayout navigationMode={'scroll'}>
-			<LipsumPara paragraphs={4} words={50}/>
+			<LipsumPara paragraphs={14} words={50}/>
 		</TcSmartLayout>
-	</>;
+	</div>;
 };

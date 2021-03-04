@@ -1,17 +1,27 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as React from 'react';
 import {TcSmartLayout, TcViewTitle} from 'TMPUILibrary/layout';
-import {LipsumPara} from 'TMPUILibrary/ui-elements';
+import {TcNavAnchor} from 'TMPUILibrary/navigation';
+import {ApplicationCard} from './application-card.component';
 
-import './config.less';
+const availableSubApps = window.TmpCore.environment.subAppList;
 
 export const ConfigPage: React.FC = () => {
-	return <>
+	return <div className={'app-layout'}>
 		<TcViewTitle>
 			Configuration
 		</TcViewTitle>
 
 		<TcSmartLayout navigationMode={'scroll'}>
-			<LipsumPara paragraphs={4} words={50}/>
+			<TcNavAnchor>Available applications</TcNavAnchor>
+
+			<div className={'application-cards '}>
+				{Object.keys(availableSubApps).map(appCode => <ApplicationCard appCode={appCode} key={appCode}/>)}
+			</div>
+
+			<p>
+				<i>Note:</i> you need to refresh page to apply changes.
+			</p>
 		</TcSmartLayout>
-	</>;
+	</div>;
 };

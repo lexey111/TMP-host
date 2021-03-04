@@ -19,7 +19,7 @@ export const SubApp: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 		const subappsAvailable = window['TmpCore']['environment']['subAppList'];
 		const bundleRequested = (props.subappView || '').split('/')[0];
 
-		setPrepared(Boolean(subappsAvailable[bundleRequested]));
+		setPrepared(Boolean(subappsAvailable[bundleRequested]) && subappsAvailable[bundleRequested].enabled);
 	}, []);
 
 	useEffect(() => {

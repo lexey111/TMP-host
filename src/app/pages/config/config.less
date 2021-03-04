@@ -1,0 +1,29 @@
+@import '~UITwfVariables';
+
+.application-cards {
+	display: flex;
+	flex-flow: row wrap;
+
+	.application-card {
+		margin-bottom: 2em;
+		margin-right: 2em;
+		width: 400px;
+
+		table {
+			border: 1px solid white;
+
+			tr {
+				td {
+					border: 1px solid white;
+					padding: 4px 6px;
+				}
+
+				td:first-child {
+					width: 16em;
+					background-color: @twf-bg-color;
+				}
+			}
+		}
+	}
+}
+
