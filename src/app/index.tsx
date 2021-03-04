@@ -13,14 +13,15 @@ declare global {
 		TmpCore: ITmpCore
 	}
 }
-const {bus} = window.TmpCore;
 
 export const App: React.FC = () => {
 	const history = useHistory();
 
 	useEffect(() => {
+		const {bus} = window.TmpCore;
+
 		bus.observer$.subscribe(value => {
-			if (value.message === 'system.navigate') {
+			if (value?.message === 'system.navigate') {
 				// eslint-disable-next-line no-console
 				console.log('Navigate request:', value.data);
 				history.push(value.data);

@@ -7,7 +7,7 @@ import {ApplicationCard} from './application-card.component';
 const availableSubApps = window.TmpCore.environment.subAppList;
 
 export const ConfigPage: React.FC = () => {
-	return <div className={'app-layout'}>
+	return <div className={'app-layout-tc'}>
 		<TcViewTitle>
 			Configuration
 		</TcViewTitle>

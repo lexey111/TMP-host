@@ -6,6 +6,7 @@ import {ITmpManager} from 'TMPCore/index';
 export type TSubAppProps = {
 	subappView: string
 	className?: string
+	silent?: boolean
 };
 
 let id = 0;
@@ -33,8 +34,12 @@ export const SubApp: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 		TmpManager
 			.mount(props.subappView, currentId)
 			.catch(err => {
-				console.log('Error on mounting', props.subappView);
-				console.log(err);
+				if (props.silent !== true) {
+					console.log('Error on mounting', props.subappView);
+					console.log(err);
+				} else {
+					setPrepared(false);
+				}
 			});
 
 		return () => {

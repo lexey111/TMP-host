@@ -10,5 +10,11 @@ module.exports = {
 		dist: 'TMP-sub-spine/dist',
 		entry: 'spine.js',
 		styles: 'spine.css'
+	},
+	template: {
+		name: 'Application template',
+		dist: 'TMP-sub-template/dist',
+		entry: 'template.js',
+		styles: 'template.css'
 	}
 };

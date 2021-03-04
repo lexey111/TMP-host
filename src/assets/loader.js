@@ -34,17 +34,6 @@ function loadTmpCore() {
 	fragment = null;
 }
 
-// function loadSubAppsList() {
-// 	console.log('Load sub-apps list');
-// 	return fetch('sub-apps/tmp_apps.json')
-// 		.then(response => response.json())
-// 		.then(data => {
-// 			console.log('App list', data);
-// 			window['TmpCore'].environment.subAppList = data;
-// 		})
-// 		.catch(err => console.error(err));
-// }
-//
 function loadMainApp() {
 	let fragment = document.createDocumentFragment();
 
