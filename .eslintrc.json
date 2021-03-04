@@ -146,7 +146,7 @@
 			"always"
 		],
 		"prefer-arrow-callback": "warn",
-		"prefer-destructuring": "error",
+		"prefer-destructuring": "warn",
 		"react/jsx-uses-react": "off",
 		"react/react-in-jsx-scope": "off",
 		"rest-spread-spacing": [
