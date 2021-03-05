@@ -53,41 +53,51 @@ module.exports = (env, args) => {
 	const subAppListForManager = {};
 
 	for (const [app, content] of Object.entries(subAppListToCopy)) {
-		console.log('Local sub-app registered:', app);
+		console.log((content.online ? 'Online' : 'Local') + ' sub-app registered:', app);
 		console.log('Content', content);
 
-		const folder = path.resolve(SubAppsBase, content.dist);
+		if (!content.online) {
+			const folder = path.resolve(SubAppsBase, content.dist);
 
-		if (!fs.existsSync(folder)) {
-			throw new Error(`Output folder for sub-app ${app} not found at ${folder} with base ${SubAppsBase}!`)
-		}
+			if (!fs.existsSync(folder)) {
+				throw new Error(`Output folder for sub-app ${app} not found at ${folder} with base ${SubAppsBase}!`)
+			}
 
-		AppsPatterns.push({
-			from: path.resolve(folder, content.entry),
-			to: path.resolve(outPath, 'scripts/subapps/' + content.entry),
-		});
-
-		if (!isProduction) {
 			AppsPatterns.push({
-				from: path.resolve(folder, content.entry + '.map'),
-				to: path.resolve(outPath, 'scripts/subapps/' + content.entry + '.map'),
+				from: path.resolve(folder, content.entry),
+				to: path.resolve(outPath, 'scripts/subapps/' + content.entry),
+				noErrorOnMissing: true,
 			});
+
+			if (!isProduction) {
+				AppsPatterns.push({
+					from: path.resolve(folder, content.entry + '.map'),
+					to: path.resolve(outPath, 'scripts/subapps/' + content.entry + '.map'),
+					noErrorOnMissing: true,
+				});
+			}
+
+			if (content.styles) {
+				AppsPatterns.push({
+					from: path.resolve(folder, content.styles),
+					to: path.resolve(outPath, 'styles/subapps/' + content.styles),
+					noErrorOnMissing: true,
+				});
+			}
 		}
 
 		subAppListForManager[app] = {
-			path: '/scripts/subapps/',
+			online: content.online || false,
+			loaded: !content.online,
+			available: content.online ? null : true,
+			path: content.online ? '' : '/scripts/subapps/',
+			homeCard: content.homeCard,
 			bundle: content.entry,
 			appName: app,
 			title: content.name,
-			stylesheet: '/styles/subapps/' + content.styles || ''
+			stylesheet: (content.online ? '' : '/styles/subapps/') + content.styles || '',
+			routes: [...(content.routes ? content.routes : [])]
 		};
-
-		if (content.styles) {
-			AppsPatterns.push({
-				from: path.resolve(folder, content.styles),
-				to: path.resolve(outPath, 'styles/subapps/' + content.styles),
-			});
-		}
 	}
 	console.log('===================');
 	console.log('');
@@ -235,6 +245,10 @@ module.exports = (env, args) => {
 					},
 					{
 						from: path.resolve('./src/assets/loader.js'),
+						to: outPath,
+					},
+					{
+						from: path.resolve('./src/assets/online-health.js'),
 						to: outPath,
 					},
 					...AppsPatterns

@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import * as React from 'react';
 import {useCallback, useState} from 'react';
-import {TcCard, TcSwitch} from 'TMPUILibrary/components';
+import {Link} from 'react-router-dom';
+import {TcCard, TcIcon, TcSwitch} from 'TMPUILibrary/components';
+import {getSubApps, TSubApp} from '../../utils';
 
 type TApplicationCardProps = {
 	appCode: string
 };
 
-const availableSubApps = window.TmpCore.environment.subAppList;
-
 export const ApplicationCard: React.FC<TApplicationCardProps> = ({appCode}: TApplicationCardProps) => {
-	const app: { appName: string; title: string; bundle: string; path: string; stylesheet: string } = availableSubApps[appCode];
+	const app: TSubApp = getSubApps()[appCode];
+
 	const [checked, setChecked] = useState<boolean>((localStorage.getItem('tmp.subapp.' + app.appName) || 'on') === 'on');
 
 	const onChange = useCallback((isChecked: boolean) => {
@@ -38,6 +39,44 @@ export const ApplicationCard: React.FC<TApplicationCardProps> = ({appCode}: TApp
 					<td>Load path</td>
 					<td>{app.path}</td>
 				</tr>
+				{app.online && <tr>
+					<td>Loaded</td>
+					<td>
+						{app.loaded
+							? <span style={{color: 'green'}}>Yes <TcIcon type={'check'}/></span>
+							: <span style={{color: 'maroon'}}>No <TcIcon type={'close'}/></span>
+						}
+					</td>
+				</tr>}
+				{app.online && <tr>
+					<td>Available</td>
+					<td>
+						{app.available
+							? <span style={{color: 'green'}}>Yes <TcIcon type={'check'}/></span>
+							: <span style={{color: 'maroon'}}>No <TcIcon type={'close'}/></span>
+						}
+					</td>
+				</tr>}
+				{app.routes?.length > 0 &&
+				<tr>
+					<td>Routes</td>
+					<td>
+						{app.routes.map(route => {
+							return <div key={route.path}>
+								<p>
+									<Link to={route.path}>/
+										{route.spineIcon && <><TcIcon type={route.spineIcon}/>&nbsp;</>}
+										{route.path}
+									</Link>
+								</p>
+								<p>
+									View: {route.view}
+								</p>
+							</div>;
+						})}
+					</td>
+				</tr>
+				}
 				</tbody>
 			</table>
 			<p>&nbsp;</p>
