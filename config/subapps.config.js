@@ -42,5 +42,18 @@ module.exports = {
 			spineIcon: 'cloud',
 			spineTitle: 'Manual for online sub-apps'
 		}]
+	},
+	ui_examples: {
+		name: 'UI Library examples',
+		online: true,
+		homeCard: true,
+		entry: 'http://localhost:3032/ui_examples.js',
+		styles: 'http://localhost:3032/ui_examples.css',
+		routes: [{
+			path: 'ui_examples', // url: ...site.com/ui_examples
+			view: 'ui_examples/controlRoom', // bundleName/viewName
+			spineIcon: 'arrow-right',
+			spineTitle: 'UI Library examples'
+		}]
 	}
 };

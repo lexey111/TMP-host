@@ -18,7 +18,9 @@ const Polls = [];
 async function doPoll(app) {
 	let result;
 	try {
-		result = await fetch(app.bundle);
+		console.log('app', app);
+		const healthFile = app.bundle.replace(app.appName + '.js', 'status.js');
+		result = await fetch(healthFile);
 	} catch {
 		result = null;
 	}
