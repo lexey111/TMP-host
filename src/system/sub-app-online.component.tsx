@@ -24,7 +24,7 @@ export const SubAppOnline: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 			if (value?.message === 'system.onlineReady') {
 				setTimeout(() => {
 					setVersion(v => v + 1);
-				}, 500);
+				}, 200);
 			}
 		});
 
@@ -45,6 +45,5 @@ export const SubAppOnline: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 		return <ErrorOffline appName={app.appName} data-verisoon={version}/>; // oops
 	}
 
-	console.log('render subapp', app, props.subappView);
 	return <SubApp {...props} data-verisoon={version}/>;
 };

@@ -6,7 +6,7 @@ import {ConfigPage} from './pages/config/config';
 import {HomePage} from './pages/home/home';
 import {getActiveSubApps, getSubAppsWithRoutes} from './utils';
 
-function createRoutePage(appName: string, view: string): () => JSX.Element {
+export function createRoutePage(appName: string, view: string): () => JSX.Element {
 	return function renderRoute() {
 		// return page wrapper
 		console.log('[Render route] for', appName + ':' + view);
@@ -42,7 +42,12 @@ getSubAppsWithRoutes()
 		}
 	);
 
-AppRoutes.push(<Route path={'/'} key={'home'}>
+AppRoutes.splice(0, 0, <Route exact path={'/'} key={'home'}>
+		<HomePage/>
+	</Route>
+); // must be the first one
+
+AppRoutes.push(<Route path={'*'} key={'home'}>
 		<HomePage/>
 	</Route>
 ); // must be the last one
