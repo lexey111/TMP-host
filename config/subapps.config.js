@@ -52,7 +52,7 @@ module.exports = {
 		routes: [{
 			path: 'ui_examples', // url: ...site.com/ui_examples
 			view: 'ui_examples/controlRoom', // bundleName/viewName
-			spineIcon: 'arrow-right',
+			spineIcon: 'compass',
 			spineTitle: 'UI Library examples'
 		}]
 	}
