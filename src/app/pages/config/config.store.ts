@@ -45,6 +45,9 @@ export class CConfigStore {
 
 	public recheckOnline = (): void => {
 		const currentApps = getSubApps();
+		if (!this.apps || Object.keys(this.apps).length === 0) {
+			this.apps = getSubApps();
+		}
 		Object.keys(currentApps).forEach(key => {
 			this.apps[key].loaded = currentApps[key].loaded;
 			this.apps[key].available = currentApps[key].available;

@@ -3,6 +3,7 @@ import * as React from 'react';
 import {useEffect} from 'react';
 import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import {ITmpCore} from 'TMPCore';
+import {ITmpManager} from 'TMPCore/index';
 import {SubApp} from '../system/sub-app.component';
 import AppRoutes, {createRoutePage} from './app-routes';
 import {getOnlineSubApps, getSubApps} from './utils';
@@ -10,33 +11,36 @@ import {getOnlineSubApps, getSubApps} from './utils';
 declare global {
 	interface Window {
 		TmpCore: ITmpCore
+		TmpManager: ITmpManager
 	}
 }
 
-const onlineApps = getOnlineSubApps();
+function initApp(): void {
+	const onlineApps = getOnlineSubApps();
 
-if (onlineApps.length) {
-	const worker = new Worker('online-health.js');
-	console.log('Start health check background service');
+	if (onlineApps.length) {
+		const worker = new Worker('online-health.js');
+		console.log('Start health check background service');
 
-	worker.postMessage({
-		cmd: 'run',
-		apps: onlineApps
-	});
+		worker.postMessage({
+			cmd: 'run',
+			apps: onlineApps
+		});
 
-	worker.addEventListener('message', (event) => {
-		// `event.data` contains the value or object sent from the worker
-		const appName = event.data.app;
-		const isAppAvailable = event.data.status === 'on';
+		worker.addEventListener('message', (event) => {
+			// `event.data` contains the value or object sent from the worker
+			const appName = event.data.app;
+			const isAppAvailable = event.data.status === 'on';
 
-		const app = onlineApps.find(a => a.appName === appName);
-		if (!app || app.available === isAppAvailable) {
-			return;
-		}
-		app.available = isAppAvailable;
-		const {bus} = window.TmpCore;
-		bus.broadcast('system.onlineReady');
-	});
+			const app = onlineApps.find(a => a.appName === appName);
+			if (!app || app.available === isAppAvailable) {
+				return;
+			}
+			app.available = isAppAvailable;
+			const {bus} = window.TmpCore;
+			bus.broadcast('system.onlineReady');
+		});
+	}
 }
 
 const {bus} = window.TmpCore;
@@ -46,6 +50,7 @@ export const App: React.FC = () => {
 	const location = useLocation();
 
 	useEffect(() => {
+		initApp();
 		bus.broadcast('system.location.changed', location.pathname);
 	}, []);
 

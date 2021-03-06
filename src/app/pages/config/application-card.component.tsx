@@ -28,15 +28,15 @@ export const ApplicationCard: React.FC<TApplicationCardProps> = observer(({appNa
 		<table>
 			<tbody>
 			<tr>
-				<td>App name (code)</td>
+				<td>App name</td>
 				<td>{app.appName}</td>
 			</tr>
 			<tr>
-				<td>Bundle file</td>
+				<td>Bundle</td>
 				<td>{app.bundle}</td>
 			</tr>
 			<tr>
-				<td>Stylesheet file</td>
+				<td>Stylesheet</td>
 				<td>{app.stylesheet}</td>
 			</tr>
 			<tr>

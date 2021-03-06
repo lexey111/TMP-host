@@ -8,11 +8,27 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const TMPCorePath = 'node_modules/tmp-core';
 const TMPConfigFile = path.resolve(`${TMPCorePath}/src/core/@exports/build-environment.js`);
+
+let isComposerMode = false;
+let composerSettings;
+if (process.env['npm_lifecycle_event'].indexOf('composer') !== -1) {
+	isComposerMode = true;
+	console.log('***************************');
+	console.log('**     COMPOSER MODE     **');
+	console.log('***************************');
+	composerSettings = require('../config/composer.config');
+	console.log('URL:', composerSettings.url);
+	console.log('');
+}
+
 const SubAppsBase = './../subapps';
 
 console.log(`Configure TMP-core as ${TMPCorePath}`);
 console.log(`Configure TMP-core config as ${TMPConfigFile}`);
-console.log(`Configure sub-apps base as ${SubAppsBase}`);
+
+if (!isComposerMode) {
+	console.log(`Configure sub-apps base as ${SubAppsBase}`);
+}
 
 if (!fs.existsSync(path.resolve(TMPCorePath))) {
 	throw new Error('TMP Core folder not found!');
@@ -44,63 +60,66 @@ module.exports = (env, args) => {
 	const sourcePath = path.join(__dirname, '../src');
 	const outPath = path.join(__dirname, '../dist');
 
-	// prepare pre-defined subapps config to copy
-	console.log('');
-	console.log('Prepare sub-apps...');
-	console.log('===================');
-	const AppsPatterns = [];
-	const subAppListToCopy = require('../config/subapps.config');
 	const subAppListForManager = {};
+	const AppsPatterns = [];
 
-	for (const [app, content] of Object.entries(subAppListToCopy)) {
-		console.log((content.online ? 'Online' : 'Local') + ' sub-app registered:', app);
-		console.log('Content', content);
+	// prepare pre-defined subapps config to copy
+	if (!isComposerMode) {
+		console.log('');
+		console.log('Prepare sub-apps...');
+		console.log('===================');
+		const subAppListToCopy = require('../config/subapps.config');
 
-		if (!content.online) {
-			const folder = path.resolve(SubAppsBase, content.dist);
+		for (const [app, content] of Object.entries(subAppListToCopy)) {
+			console.log((content.online ? 'Online' : 'Local') + ' sub-app registered:', app);
+			console.log('Content', content);
 
-			if (!fs.existsSync(folder)) {
-				throw new Error(`Output folder for sub-app ${app} not found at ${folder} with base ${SubAppsBase}!`)
-			}
+			if (!content.online) {
+				const folder = path.resolve(SubAppsBase, content.dist);
 
-			AppsPatterns.push({
-				from: path.resolve(folder, content.entry),
-				to: path.resolve(outPath, 'scripts/subapps/' + content.entry),
-				noErrorOnMissing: true,
-			});
+				if (!fs.existsSync(folder)) {
+					throw new Error(`Output folder for sub-app ${app} not found at ${folder} with base ${SubAppsBase}!`)
+				}
 
-			if (!isProduction) {
 				AppsPatterns.push({
-					from: path.resolve(folder, content.entry + '.map'),
-					to: path.resolve(outPath, 'scripts/subapps/' + content.entry + '.map'),
+					from: path.resolve(folder, content.entry),
+					to: path.resolve(outPath, 'scripts/subapps/' + content.entry),
 					noErrorOnMissing: true,
 				});
+
+				if (!isProduction) {
+					AppsPatterns.push({
+						from: path.resolve(folder, content.entry + '.map'),
+						to: path.resolve(outPath, 'scripts/subapps/' + content.entry + '.map'),
+						noErrorOnMissing: true,
+					});
+				}
+
+				if (content.styles) {
+					AppsPatterns.push({
+						from: path.resolve(folder, content.styles),
+						to: path.resolve(outPath, 'styles/subapps/' + content.styles),
+						noErrorOnMissing: true,
+					});
+				}
 			}
 
-			if (content.styles) {
-				AppsPatterns.push({
-					from: path.resolve(folder, content.styles),
-					to: path.resolve(outPath, 'styles/subapps/' + content.styles),
-					noErrorOnMissing: true,
-				});
-			}
+			subAppListForManager[app] = {
+				online: content.online || false,
+				loaded: !content.online,
+				available: content.online ? null : true,
+				path: content.online ? '' : '/scripts/subapps/',
+				homeCard: content.homeCard,
+				bundle: content.entry,
+				appName: app,
+				title: content.name,
+				stylesheet: (content.online ? '' : '/styles/subapps/') + content.styles || '',
+				routes: [...(content.routes ? content.routes : [])]
+			};
 		}
-
-		subAppListForManager[app] = {
-			online: content.online || false,
-			loaded: !content.online,
-			available: content.online ? null : true,
-			path: content.online ? '' : '/scripts/subapps/',
-			homeCard: content.homeCard,
-			bundle: content.entry,
-			appName: app,
-			title: content.name,
-			stylesheet: (content.online ? '' : '/styles/subapps/') + content.styles || '',
-			routes: [...(content.routes ? content.routes : [])]
-		};
+		console.log('===================');
+		console.log('');
 	}
-	console.log('===================');
-	console.log('');
 
 	const config = {
 		context: sourcePath,
@@ -228,6 +247,8 @@ module.exports = (env, args) => {
 			new webpack.DefinePlugin({
 				SUBAPPS: JSON.stringify(subAppListForManager),
 				PRODUCTION: JSON.stringify(isProduction),
+				IS_COMPOSER: JSON.stringify(isComposerMode),
+				COMPOSER: JSON.stringify(composerSettings),
 			}),
 			new webpack.EnvironmentPlugin({
 				NODE_ENV: isProduction ? 'production' : 'development', // use 'development' unless process.env.NODE_ENV is defined

@@ -151,5 +151,65 @@ a {
 	cursor: pointer;
 }
 
+.composerAnimation() {
+	animation-name: composer-state;
+	animation-fill-mode: forwards;
+	animation-delay: 0s;
+	animation-duration: .8s;
+	animation-play-state: running;
+	animation-timing-function: ease;
+}
+
+.composer-error {
+	width: 500px;
+	background-color: #fff;
+	border-radius: 6px;
+	box-shadow: 0 2px 6px rgba(85, 8, 8, 0.2);
+	padding: 32px;
+	margin: 2em auto;
+	color: @twf-primary-red;
+
+	.composerAnimation;
+}
+
+.composer-fetching {
+	width: 500px;
+	background-color: @twf-primary-blue;
+	border-radius: 6px;
+	box-shadow: 0 2px 6px rgba(8, 43, 85, 0.2);
+	padding: 32px;
+	margin: 2em auto;
+	color: #fff;
+
+	p {
+		opacity: .5;
+	}
+
+	.composerAnimation;
+}
+
+.composer-starting {
+	width: 500px;
+	background-color: @twf-primary-green;
+	border-radius: 6px;
+	box-shadow: 0 2px 6px rgba(8, 43, 85, 0.2);
+	padding: 32px;
+	margin: 2em auto;
+	color: #fff;
+
+	.composerAnimation;
+}
+
+@keyframes composer-state {
+	0% {
+		opacity: 0;
+		transform: translateY(-24px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
 @import "@pages.less";
 @import "@tc.less";

@@ -6,11 +6,17 @@ self.addEventListener('message', function (e) {
 }, false);
 
 const informBundleAvailable = (bundleName) => {
-	self.postMessage({app: bundleName, status: 'on'});
+	self.postMessage({
+		app: bundleName,
+		status: 'on'
+	});
 }
 
 const informBundleNotAvailable = (bundleName) => {
-	self.postMessage({app: bundleName, status: 'off'});
+	self.postMessage({
+		app: bundleName,
+		status: 'off'
+	});
 }
 
 const Polls = [];
@@ -20,6 +26,9 @@ async function doPoll(app) {
 	try {
 		const healthFile = app.bundle.replace(app.appName + '.js', 'status.js');
 		result = await fetch(healthFile);
+		if (result.status !== 200 && result.status !== 204) {
+			throw new Error('No status file available!');
+		}
 	} catch {
 		result = null;
 	}
@@ -37,7 +46,10 @@ function startPolling(apps) {
 		// just try to request app.entry file
 
 		const poll = setInterval(() => doPoll(app), 10 * 1000); // each 10s
-		Polls.push({bundle: app.bundle, handler: poll});
+		Polls.push({
+			bundle: app.bundle,
+			handler: poll
+		});
 
 		void doPoll(app); // run immediate check
 	});
