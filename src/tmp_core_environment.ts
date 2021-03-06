@@ -9,7 +9,21 @@ declare const SUBAPPS;
 	window.TmpCore.environment.servicesBundle = '';
 	window.TmpCore.environment.uiBundle = '';
 	window.TmpCore.environment.subAppList = SUBAPPS;
-	window.TmpCore.environment.availableLocales = [];
+	// @ts-ignore
+	window.TmpCore.environment.availableLocales = [
+		{
+			code: 'fallback',
+			hash: 'version 1',
+		},
+		{
+			code: 'en-GB',
+			hash: 'version 1',
+		},
+		{
+			code: 'nl-NL',
+			hash: 'version 1',
+		},
+	];
 	window.TmpCore.environment.availableDictionaries = {};
 
 	console.log('Host environment ready.');

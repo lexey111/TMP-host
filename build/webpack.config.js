@@ -251,6 +251,11 @@ module.exports = (env, args) => {
 						from: path.resolve('./src/assets/online-health.js'),
 						to: outPath,
 					},
+					{
+						from: path.resolve('./src/assets/i18n'),
+						to: outPath + '/i18n',
+						toType: 'dir'
+					},
 					...AppsPatterns
 				]
 			}),
