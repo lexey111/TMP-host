@@ -13,11 +13,29 @@
 			margin: 0.5em 0.5em 0 0;
 			box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
 			overflow: hidden;
+
+			transform-origin: top left;
+			animation: show-card;
+			animation-duration: .5s;
+			animation-delay: 0s;
+			animation-play-state: running;
+			animation-fill-mode: forwards;
 		}
 	}
 
 	h1 {
 		font-size: 1.5em;
 		margin-bottom: 2em;
+	}
+}
+
+@keyframes show-card {
+	0% {
+		transform: translateX(48px) scaleX(.8);
+		opacity: 0;
+	}
+	100% {
+		transform: translateX(0) scaleX(1);
+		opacity: 1;
 	}
 }
