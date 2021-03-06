@@ -51,24 +51,31 @@ export const App: React.FC = () => {
 			if (value?.message === 'system.navigate') {
 				console.log('Navigate request:', value.data);
 				history.push(value.data);
+				return;
 			}
 
-			if (value?.message === 'system.registerRoute') {
-				console.log('[Route] Registration:', value.data);
+			if (value?.message === 'system.registerRoutes' && value?.data.appName && Array.isArray(value.data?.routes)) {
+				console.log('[Routes] Registration:', value.data);
+				const routesToRegister: Array<{ url: string; view: string }> = value.data.routes;
 
-				const newRoute = <Route
-					exact path={'/' + value.data.url}
-					key={value.data.url}
-					render={createRoutePage(value.data.appName, value.data.view)}/>;
+				routesToRegister
+					.forEach(routeItem => {
+						const newRoute = <Route
+							exact path={'/' + routeItem.url}
+							key={routeItem.url}
+							render={createRoutePage(value.data.appName, routeItem.view)}/>;
 
-				AppRoutes.splice(AppRoutes.length - 2, 0, newRoute);
+						AppRoutes.splice(AppRoutes.length - 2, 0, newRoute);
+						console.log('[Routes] Add', routeItem.url + ':' + routeItem.view);
 
-				if (location.pathname === '/' + value.data.url) {
-					// postponed route update
-					history.push('/');
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-					setTimeout(() => history.push(location.pathname), 10);
-				}
+						if (location.pathname === '/' + value.data.url) {
+							// postponed route update
+							history.push('/');
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+							setTimeout(() => history.push(location.pathname), 10);
+						}
+					});
+				return;
 			}
 
 			if (value?.message === 'system.onlineReady' && value.data) {
