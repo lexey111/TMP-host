@@ -25,7 +25,7 @@ In `TMP-host` folder run `docker-compose up` to build the files. Result will be
 placed into `TMP-host/dist` folder.
 
 #### Development + watch mode
-In `TMP-host` folder run `docker-compose -f docker-compose.watch.yml up` to build the files. Result will be placed into `TMP-host/dist` folder and application will start watching. Webserver will be available on URL `localhost:3030`.
+In `TMP-host` folder run `docker-compose -f docker-compose.start.yml up` to build the files. Result will be placed into `TMP-host/dist` folder and application will start watching. Webserver will be available on URL `localhost:3030`.
 
 `node_modules` and `dist` folders will be mapped.
 
