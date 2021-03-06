@@ -1,0 +1,53 @@
+.app-layout {
+	&.error-page {
+		padding: 32px;
+
+		.error-content {
+			display: block;
+			padding: 32px;
+			margin: 0 auto;
+			min-width: 450px;
+			max-width: 600px;
+			width: 50%;
+			background: #fff;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+
+			h1 {
+				font-size: 1.8em;
+				color: @twf-primary-red;
+			}
+
+			p {
+				margin: 1em 0;
+				b {
+					font-weight: bold;
+				}
+			}
+
+			.action-line {
+				margin-top: 1em;
+				float: right;
+				clear: both;
+			}
+
+			.error-application-card {
+				table {
+					border-collapse: separate;
+					border-spacing: 2px;
+					font-size: .9em;
+
+					tr {
+						td {
+							padding: 4px 6px;
+						}
+
+						td:first-child {
+							width: 16em;
+							background: rgba(0, 0, 0, .1);
+						}
+					}
+				}
+			}
+		}
+	}
+}

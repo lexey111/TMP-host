@@ -47,3 +47,7 @@ export const getSubAppsWithHomeCard = (): Array<TSubApp> => {
 export const getSubAppsWithRoutes = (): Array<TSubApp> => {
 	return getActiveSubApps().filter(app => app.routes?.length > 0);
 };
+
+export const getOnlineSubApps = (): Array<TSubApp> => {
+	return getActiveSubApps().filter(app => app.online);
+};

@@ -5,7 +5,7 @@ import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import {ITmpCore} from 'TMPCore';
 import {SubApp} from '../system/sub-app.component';
 import AppRoutes, {createRoutePage} from './app-routes';
-import {getSubApps, getSubAppsWithRoutes} from './utils';
+import {getOnlineSubApps, getSubApps} from './utils';
 
 declare global {
 	interface Window {
@@ -13,7 +13,7 @@ declare global {
 	}
 }
 
-const onlineApps = getSubAppsWithRoutes().filter(app => app.online);
+const onlineApps = getOnlineSubApps();
 
 if (onlineApps.length) {
 	const worker = new Worker('online-health.js');
