@@ -39,13 +39,22 @@ if (onlineApps.length) {
 	});
 }
 
+const {bus} = window.TmpCore;
+
 export const App: React.FC = () => {
 	const history = useHistory();
 	const location = useLocation();
 
 	useEffect(() => {
+		bus.broadcast('system.location.changed', location.pathname);
+	}, []);
+
+	useEffect(() => {
+		bus.broadcast('system.location.changed', location.pathname);
+	}, [location.pathname]);
+
+	useEffect(() => {
 		// Subscribe to navigation requests and online onLoad events
-		const {bus} = window.TmpCore;
 
 		bus.observer$.subscribe(value => {
 			if (value?.message === 'system.navigate') {
@@ -68,8 +77,9 @@ export const App: React.FC = () => {
 						AppRoutes.splice(AppRoutes.length - 2, 0, newRoute);
 						console.log('[Routes] Add', routeItem.url + ':' + routeItem.view);
 
-						if (location.pathname === '/' + value.data.url) {
+						if (location.pathname === '/' + routeItem.url) {
 							// postponed route update
+							console.log('[postponed]', routeItem.url);
 							history.push('/');
 							// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 							setTimeout(() => history.push(location.pathname), 10);
