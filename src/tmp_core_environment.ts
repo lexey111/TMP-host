@@ -17,7 +17,10 @@ declare const SUBAPPS;
 
 	Object.keys(window.TmpCore.environment.subAppList).forEach(appCode => {
 		const enabled = (localStorage.getItem('tmp.subapp.' + appCode) || 'on') === 'on';
+		const homeCardEnabled = (localStorage.getItem('tmp.subapp.homecard' + appCode) || 'on') === 'on';
+
 		window.TmpCore.environment.subAppList[appCode].enabled = enabled;
+		window.TmpCore.environment.subAppList[appCode].homeCardEnabled = homeCardEnabled;
 
 		console.log(`  Application bundle "${appCode}": ${enabled ? 'enabled' : 'disabled'}`);
 	});

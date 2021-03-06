@@ -94,6 +94,47 @@ body {
 					.app-layout {
 						overflow-x: hidden;
 						overflow-y: auto;
+
+						h1 {
+							font-size: 1.6em;
+						}
+
+						h2 {
+							font-size: 1.4em;
+						}
+
+						h3 {
+							font-size: 1.2em;
+						}
+
+						&.app-single-page {
+							padding: 0;
+							display: flex;
+							overflow: hidden;
+							position: absolute;
+							top: 0;
+							left: 0;
+							right: 0;
+							bottom: 0;
+
+							.app-single-page-content {
+								height: 100%;
+								width: 100%;
+								padding: 32px;
+								overflow-y: auto;
+								flex-grow: 1;
+							}
+
+							.app-single-page-actions {
+								background-color: #fff;
+								box-shadow: 0 -1px 0 rgba(0, 0, 0, .1);
+								display: flex;
+								height: 50px;
+								padding: 0 32px;
+								min-height: 50px;
+								align-items: center;
+							}
+						}
 					}
 				}
 			}

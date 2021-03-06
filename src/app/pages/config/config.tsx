@@ -1,41 +1,48 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import {useEffect, useState} from 'react';
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-return */
 import * as React from 'react';
-import {TcSmartLayout, TcViewTitle} from 'TMPUILibrary/layout';
-import {TcNavAnchor} from 'TMPUILibrary/navigation';
-import {getSubApps} from '../../utils';
+import {useCallback, useEffect, useState} from 'react';
+import {TcButton} from 'TMPUILibrary/components';
+import {observer} from 'TMPUILibrary/mobx';
 import {ApplicationCard} from './application-card.component';
+import {ConfigStore} from './config.store';
 
-export const ConfigPage: React.FC = () => {
+export const ConfigPage: React.FC = observer(() => {
 	const [version, setVersion] = useState(0);
 
 	useEffect(() => {
+		ConfigStore.recheckOnline();
 		// subscribe to online sub-app loaded event
 		const {bus} = window.TmpCore;
 		bus.observer$.subscribe(value => {
 			if (value?.message === 'system.onlineReady') {
 				setTimeout(() => {
 					setVersion(v => v + 1);
+					ConfigStore.recheckOnline();
 				}, 500);
 			}
 		});
 	}, []);
 
-	return <div className={'app-layout-tc'} data-version={version}>
-		<TcViewTitle>
-			Configuration
-		</TcViewTitle>
+	const handleApply = useCallback(() => {
+		ConfigStore.saveState();
+		window.location.href = '/';
+	}, []);
 
-		<TcSmartLayout navigationMode={'scroll'}>
-			<TcNavAnchor>Available applications</TcNavAnchor>
+	return <div className={'app-layout app-single-page'} data-version={version}>
+		<div className={'app-single-page-content'}>
+			<h1>Available applications</h1>
 
 			<div className={'application-cards '}>
-				{Object.keys(getSubApps()).map(appCode => <ApplicationCard appCode={appCode} key={appCode}/>)}
+				{ConfigStore.appArray.map(app => <ApplicationCard appName={app.appName} key={app.appName}/>)}
 			</div>
-
-			<p>
-				<i>Note:</i> you need to refresh page to apply changes.
-			</p>
-		</TcSmartLayout>
+		</div>
+		<div className={'app-single-page-actions'}>
+			<TcButton
+				onClick={handleApply}
+				disabled={!ConfigStore._changed}>
+				Apply changes
+			</TcButton>
+			{!ConfigStore._changed && <span style={{marginLeft: '1em'}}>Change some value first</span>}
+		</div>
 	</div>;
-};
+});

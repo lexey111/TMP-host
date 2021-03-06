@@ -39,8 +39,8 @@ export const ErrorOffline: React.FC<TErrorOfflineProps> = (props: TErrorOfflineP
 						<td>Loaded</td>
 						<td>
 							{app.loaded
-								? <span style={{color: 'green'}}>Yes <TcIcon type={'check'}/></span>
-								: <span style={{color: 'maroon'}}>No <TcIcon type={'close'}/></span>
+								? <span style={{color: 'green'}}>Yes <TcIcon type={'check-circle'}/></span>
+								: <span style={{color: 'maroon'}}>No <TcIcon type={'caution'} filled={true}/></span>
 							}
 						</td>
 					</tr>}
@@ -48,8 +48,8 @@ export const ErrorOffline: React.FC<TErrorOfflineProps> = (props: TErrorOfflineP
 						<td>Available</td>
 						<td>
 							{app.available
-								? <span style={{color: 'green'}}>Yes <TcIcon type={'check'}/></span>
-								: <span style={{color: 'maroon'}}>No <TcIcon type={'close'}/></span>
+								? <span style={{color: 'green'}}>Yes <TcIcon type={'check-circle'}/></span>
+								: <span style={{color: 'maroon'}}>No <TcIcon type={'caution'} filled={true}/></span>
 							}
 						</td>
 					</tr>}

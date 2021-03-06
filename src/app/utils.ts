@@ -3,6 +3,7 @@ export type TSubApp = {
 	loaded?: boolean // bundle was loaded
 	available?: true | false | null // online bundle is available right now
 	enabled?: boolean // app is allowed to be loaded
+	homeCardEnabled?: boolean // app is allowed to be shown home card
 	appName: string
 	title: string
 	bundle: string
@@ -24,6 +25,11 @@ type TSubAppList = Record<string, TSubApp>;
 
 export const getSubApps = (): TSubAppList => {
 	return window.TmpCore.environment.subAppList as unknown as TSubAppList;
+};
+
+export const getSubAppsArray = (): Array<TSubApp> => {
+	const subApps = getSubApps();
+	return Object.keys(subApps).map(key => subApps[key]);
 };
 
 export const getActiveSubApps = (): Array<TSubApp> => {

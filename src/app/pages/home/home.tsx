@@ -26,9 +26,11 @@ export const HomePage: React.FC = () => {
 
 		<div className={'app-home-cards'}>
 			{getSubAppsWithHomeCard()
-				.filter(app => app.available)
+				.filter(app => app.available && app.homeCardEnabled)
 				.map(app => {
-					console.log('Request home card from sub-app', app.appName);
+
+					console.log('Requested home card from sub-app', app.appName);
+
 					return <SubApp
 						subappView={app.appName + '/home'}
 						className={'app-home-card'}

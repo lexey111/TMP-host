@@ -83,6 +83,7 @@
 		"prefer-promise-reject-errors": "error",
 		"radix": "error",
 		"no-undefined": "error",
+		"no-unsafe-return": "off",
 		"semi": "off",
 		"@typescript-eslint/semi": [
 			"error"
