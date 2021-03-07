@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call */
 import * as React from 'react';
 import {useEffect, useState} from 'react';
-import {TcIcon} from 'TMPUILibrary/components';
+import {TcButton, TcIcon} from 'TMPUILibrary/components';
 import {reStartApp} from '../main';
 
 declare const COMPOSER: { url: string; config: string };
@@ -69,6 +69,11 @@ export const ComposerApp: React.FC = () => {
 						<h1>{error}</h1>
 						<p>
 							Cannot get the config from {COMPOSER.url}/{COMPOSER.config}.
+						</p>
+						<p>
+							<TcButton type={'danger'} onClick={() => window.location.reload()}>
+								<TcIcon type={'sync'} filled={true}/> Try again
+							</TcButton>
 						</p>
 					</div>
 					}

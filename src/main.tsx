@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {BrowserRouter as Router} from 'react-router-dom';
 import {I18nService} from 'TMPCore/services';
-import {App} from './app';
+import {App} from './app/app';
 import {ComposerApp} from './app/composer-app';
 
 import './styles/shell.less';

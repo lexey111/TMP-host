@@ -12,7 +12,7 @@ export const HomePage: React.FC = () => {
 		// subscribe to online sub-app loaded event
 		const {bus} = window.TmpCore;
 		bus.observer$.subscribe(value => {
-			if (value?.message === 'system.onlineReady') {
+			if (value?.message === 'system.bundleLoaded') {
 				setTimeout(() => {
 					setVersion(v => v + 1);
 				}, 500);

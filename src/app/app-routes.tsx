@@ -20,36 +20,43 @@ export function createRoutePage(appName: string, view: string): () => JSX.Elemen
 	};
 }
 
-const AppRoutes = [
-	<Route exact path={'/config'} key={'config'}>
-		<ConfigPage/>
-	</Route>,
-];
+function getAppsStaticRoutes(): Array<JSX.Element> {
+	const subRoutes: Array<JSX.Element> = [];
 
-getSubAppsWithRoutes()
-	.forEach(subApp => {
-			const routes = subApp.routes.map(route => {
-				console.log(`[${subApp.appName}] Register route: "${route.path}", view: "${route.view}"`);
+	getSubAppsWithRoutes()
+		.forEach(subApp => {
+				const routes = subApp.routes.map(route => {
+					console.log(`[${subApp.appName}] Register sub-app route: "${route.path}", view: "${route.view}"`);
 
-				return <Route
-					exact path={'/' + route.path}
-					key={route.path}
-					render={createRoutePage(subApp.appName, route.view)}/>;
-			});
-			if (routes.length) {
-				routes.forEach(item => AppRoutes.push(item));
+					return <Route
+						exact path={'/' + route.path}
+						key={route.path}
+						render={createRoutePage(subApp.appName, route.view)}/>;
+				});
+				if (routes.length) {
+					routes.forEach(item => subRoutes.push(item));
+				}
 			}
-		}
-	);
+		);
+	return subRoutes;
+}
 
-AppRoutes.splice(0, 0, <Route exact path={'/'} key={'home'}>
-		<HomePage/>
-	</Route>
-); // must be the first one
+export function getStaticRoutes(): Array<JSX.Element> {
+	const AppRoutes = [
+		<Route exact path={'/'} key={'home'}>
+			<HomePage/>
+		</Route>,
 
-AppRoutes.push(<Route path={'*'} key={'home'}>
-		<HomePage/>
-	</Route>
-); // must be the last one
+		<Route exact path={'/config'} key={'config'}>
+			<ConfigPage/>
+		</Route>,
+	];
 
-export default AppRoutes;
+	return [
+		...AppRoutes,
+		...getAppsStaticRoutes(),
+		<Route path={'*'} key={'all'}>
+			<HomePage/>
+		</Route>
+	];
+}

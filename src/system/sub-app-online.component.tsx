@@ -21,7 +21,7 @@ export const SubAppOnline: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 		const {bus} = window.TmpCore;
 
 		const subscription$ = bus.observer$.subscribe(value => {
-			if (value?.message === 'system.onlineReady') {
+			if (value?.message === 'system.bundleLoaded') {
 				setTimeout(() => {
 					setVersion(v => v + 1);
 				}, 200);

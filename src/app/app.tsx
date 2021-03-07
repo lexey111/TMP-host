@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,no-console,@typescript-eslint/restrict-plus-operands */
 import * as React from 'react';
-import {useEffect} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import {ITmpCore} from 'TMPCore';
 import {ITmpManager} from 'TMPCore/index';
 import {SubApp} from '../system/sub-app.component';
-import AppRoutes, {createRoutePage} from './app-routes';
-import {getOnlineSubApps, getSubApps} from './utils';
+import {createRoutePage, getStaticRoutes} from './app-routes';
+import {getOnlineSubApps, getSubApps, getSubAppsArray} from './utils';
 
 declare global {
 	interface Window {
@@ -15,12 +15,30 @@ declare global {
 	}
 }
 
+declare const IS_COMPOSER: boolean;
+declare const COMPOSER: { url: string; config: string };
+const {bus} = window.TmpCore;
+
 function initApp(): void {
-	const onlineApps = getOnlineSubApps();
+	let configFile;
+
+	if (IS_COMPOSER) {
+		configFile = COMPOSER.url + '/' + COMPOSER.config;
+	}
+
+	const onlineApps = IS_COMPOSER
+		? [
+			{
+				bundle: configFile,
+				appName: '@@composer',
+				available: false
+			}
+		]
+		: getOnlineSubApps();
 
 	if (onlineApps.length) {
 		const worker = new Worker('online-health.js');
-		console.log('Start health check background service');
+		console.log('[Health] Start health check background service' + (IS_COMPOSER ? ' in composer mode' : ''));
 
 		worker.postMessage({
 			cmd: 'run',
@@ -28,33 +46,64 @@ function initApp(): void {
 		});
 
 		worker.addEventListener('message', (event) => {
-			// `event.data` contains the value or object sent from the worker
 			const appName = event.data.app;
 			const isAppAvailable = event.data.status === 'on';
+
+			if (appName === '@@composer') {
+				console.log('Set common state (composer) to ' + (isAppAvailable ? 'on' : 'off'));
+				getSubAppsArray().forEach(app => app.available = isAppAvailable);
+				bus.broadcast('system.bundleLoaded');
+				return;
+			}
 
 			const app = onlineApps.find(a => a.appName === appName);
 			if (!app || app.available === isAppAvailable) {
 				return;
 			}
 			app.available = isAppAvailable;
-			const {bus} = window.TmpCore;
-			bus.broadcast('system.onlineReady');
 		});
 	}
 }
 
-const {bus} = window.TmpCore;
+function registerSubRoute(
+	{
+		Routes,
+		appName,
+		url,
+		view
+	}: { Routes: Array<JSX.Element>; appName: string; url: string; view: string }): void {
+
+	const newRoute = <Route
+		exact path={'/' + url}
+		key={url}
+		render={createRoutePage(appName, view)}/>;
+
+	Routes.splice(Routes.length - 2, 0, newRoute);
+	console.log('[Routes] Add', url + ':' + view);
+}
 
 export const App: React.FC = () => {
 	const history = useHistory();
 	const location = useLocation();
 
+	const APPRoutes = useRef<Array<JSX.Element>>(null);
+	const [version, setVersion] = useState(0);
+
 	useEffect(() => {
 		initApp();
-		bus.broadcast('system.location.changed', location.pathname);
+		APPRoutes.current = getStaticRoutes();
+		setVersion(v => v + 1);
+
+		// actualize nav state
+		setTimeout(() => {
+			bus.broadcast('system.location.changed', location.pathname);
+		}, 200);
 	}, []);
 
 	useEffect(() => {
+		if (!APPRoutes.current) {
+			return;
+		}
 		bus.broadcast('system.location.changed', location.pathname);
 	}, [location.pathname]);
 
@@ -63,7 +112,7 @@ export const App: React.FC = () => {
 
 		bus.observer$.subscribe(value => {
 			if (value?.message === 'system.navigate') {
-				console.log('Navigate request:', value.data);
+				console.log('[Navigate] Request:', value.data);
 				history.push(value.data);
 				return;
 			}
@@ -74,17 +123,15 @@ export const App: React.FC = () => {
 
 				routesToRegister
 					.forEach(routeItem => {
-						const newRoute = <Route
-							exact path={'/' + routeItem.url}
-							key={routeItem.url}
-							render={createRoutePage(value.data.appName, routeItem.view)}/>;
-
-						AppRoutes.splice(AppRoutes.length - 2, 0, newRoute);
-						console.log('[Routes] Add', routeItem.url + ':' + routeItem.view);
+						registerSubRoute({
+							Routes: APPRoutes.current,
+							appName: value.data.appName,
+							url: routeItem.url,
+							view: routeItem.view
+						});
 
 						if (location.pathname === '/' + routeItem.url) {
-							// postponed route update
-							console.log('[postponed]', routeItem.url);
+							console.log('[Postponed route update]', routeItem.url);
 							history.push('/');
 							// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 							setTimeout(() => history.push(location.pathname), 10);
@@ -93,7 +140,7 @@ export const App: React.FC = () => {
 				return;
 			}
 
-			if (value?.message === 'system.onlineReady' && value.data) {
+			if (value?.message === 'system.bundleLoaded' && value.data) {
 				console.log('Online sub-app loaded:', value.data);
 				const onlineApp = getSubApps()[value.data];
 				if (onlineApp) {
@@ -102,6 +149,10 @@ export const App: React.FC = () => {
 			}
 		});
 	}, []);
+
+	if (!APPRoutes.current) {
+		return <div className={'app-resolving'} data-version={version}>Resolving routes...</div>;
+	}
 
 	return <>
 		<SubApp subappView={'topbar/header'} className={'app-topbar'}/>
@@ -112,7 +163,7 @@ export const App: React.FC = () => {
 			<div className={'content-area'}>
 				<div className={'content'}>
 					<Switch>
-						{AppRoutes}
+						{APPRoutes.current}
 					</Switch>
 				</div>
 			</div>
