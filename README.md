@@ -29,6 +29,8 @@ In `TMP-host` folder run `docker-compose -f docker-compose.start.yml up` to buil
 
 `node_modules` and `dist` folders will be mapped.
 
+Use `docker-compose -f docker-compose.start-with-composer.yml up` to start devserver in composer mode.
+
 ### CLI (with local NPM install)
 
 1. `npm i`
