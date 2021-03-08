@@ -34,8 +34,8 @@ module.exports = {
 		name: 'Online',
 		online: true,
 		homeCard: true,
-		entry: 'http://localhost:3033/online.js',
-		styles: 'http://localhost:3033/online.css',
+		entry: 'http://localhost:3032/online.js',
+		styles: 'http://localhost:3032/online.css',
 		routes: [{
 			path: 'manual-online', // url: ...site.com/manual-online
 			view: 'online/manual', // bundleName/viewName
@@ -47,8 +47,8 @@ module.exports = {
 		name: 'UI Library examples',
 		online: true,
 		homeCard: true,
-		entry: 'http://localhost:3032/ui_examples.js',
-		styles: 'http://localhost:3032/ui_examples.css',
+		entry: 'http://localhost:3031/ui_examples.js',
+		styles: 'http://localhost:3031/ui_examples.css',
 		routes: [{
 			path: 'ui_examples', // url: ...site.com/ui_examples
 			view: 'ui_examples/controlRoom', // bundleName/viewName
