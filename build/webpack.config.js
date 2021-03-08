@@ -38,7 +38,7 @@ if (!fs.existsSync(TMPConfigFile)) {
 	throw new Error('TMP Core config file not found!');
 }
 
-if (!fs.existsSync(path.resolve(SubAppsBase))) {
+if (!isComposerMode && !fs.existsSync(path.resolve(SubAppsBase))) {
 	throw new Error('Sub-apps folder not found!');
 }
 

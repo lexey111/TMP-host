@@ -13,7 +13,7 @@ module.exports = {
 		entry: 'spine.js',
 		styles: 'spine.css',
 		routes: [{
-			path: 'config', // url: ...site.com/manual-template
+			path: 'config', // url: ...site.com/config
 			spineIcon: 'settings',
 			spineTitle: 'Settings page',
 			position: 'bottom'
