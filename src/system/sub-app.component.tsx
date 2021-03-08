@@ -21,10 +21,18 @@ export const SubApp: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 	useLayoutEffect(() => {
 		return () => {
 			destroying.current = true;
+		};
+	}, []);
 
+	useLayoutEffect(() => {
+		return () => {
 			if (mountedId.current) {
 				const TmpManager: ITmpManager = window['TmpManager'];
-				TmpManager.unmount(props.subappView, mountedId.current);
+				try {
+					TmpManager.unmount(props.subappView, mountedId.current);
+				} catch (e) {
+					//
+				}
 			}
 		};
 	}, []);

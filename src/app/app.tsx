@@ -19,6 +19,8 @@ declare const IS_COMPOSER: boolean;
 declare const COMPOSER: { url: string; config: string };
 const {bus} = window.TmpCore;
 
+let _lastAvailable = false;
+
 function initApp(): void {
 	let configFile;
 
@@ -50,9 +52,12 @@ function initApp(): void {
 			const isAppAvailable = event.data.status === 'on';
 
 			if (appName === '@@composer') {
-				console.log('Set common state (composer) to ' + (isAppAvailable ? 'on' : 'off'));
-				getSubAppsArray().forEach(app => app.available = isAppAvailable);
-				bus.broadcast('system.bundleLoaded');
+				if (_lastAvailable !== isAppAvailable) {
+					console.log('Set common state (composer) to ' + (isAppAvailable ? 'on' : 'off'));
+					_lastAvailable = isAppAvailable;
+					getSubAppsArray().forEach(app => app.available = isAppAvailable);
+					bus.broadcast('system.bundleLoaded');
+				}
 				return;
 			}
 
@@ -97,7 +102,7 @@ export const App: React.FC = () => {
 		// actualize nav state
 		setTimeout(() => {
 			bus.broadcast('system.location.changed', location.pathname);
-		}, 200);
+		}, 2000);
 	}, []);
 
 	useEffect(() => {

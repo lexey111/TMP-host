@@ -6,6 +6,7 @@ import {observer} from 'TMPUILibrary/mobx';
 import {ApplicationCard} from './application-card.component';
 import {ConfigStore} from './config.store';
 
+let _debouncer;
 export const ConfigPage: React.FC = observer(() => {
 	const [version, setVersion] = useState(0);
 
@@ -13,14 +14,22 @@ export const ConfigPage: React.FC = observer(() => {
 		ConfigStore.recheckOnline();
 		// subscribe to online sub-app loaded event
 		const {bus} = window.TmpCore;
-		bus.observer$.subscribe(value => {
+		const subscriber$ = bus.observer$.subscribe(value => {
 			if (value?.message === 'system.bundleLoaded') {
-				setTimeout(() => {
+				clearTimeout(_debouncer);
+				_debouncer = setTimeout(() => {
 					setVersion(v => v + 1);
 					ConfigStore.recheckOnline();
 				}, 500);
 			}
 		});
+
+		return () => {
+			clearTimeout(_debouncer);
+			if (subscriber$) {
+				subscriber$.unsubscribe();
+			}
+		};
 	}, []);
 
 	const handleApply = useCallback(() => {
