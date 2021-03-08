@@ -3,6 +3,7 @@ export type TSubApp = {
 	loaded?: boolean // bundle was loaded
 	available?: true | false | null // online bundle is available right now
 	enabled?: boolean // app is allowed to be loaded
+	fileSize?: string
 	homeCardEnabled?: boolean // app is allowed to be shown home card
 	appName: string
 	title: string

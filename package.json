@@ -31,7 +31,7 @@
 		"tmp-core": "git://github.com/lexey111/TMP-core.git"
 	},
 	"devDependencies": {
-		"@types/react": "^17.0.1",
+		"@types/react": "^17.0.3",
 		"@types/react-dom": "^17.0.1",
 		"@types/webpack": "^4.41.26",
 		"@typescript-eslint/eslint-plugin": "^4.16.1",
@@ -57,7 +57,7 @@
 		"terser-webpack-plugin": "^5.1.1",
 		"ts-loader": "^8.0.17",
 		"typescript": "^4.2.3",
-		"webpack": "^5.24.3",
+		"webpack": "^5.24.4",
 		"webpack-cli": "^4.5.0",
 		"webpack-dev-server": "^3.11.2"
 	}

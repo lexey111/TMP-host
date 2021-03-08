@@ -51,6 +51,7 @@ export class CConfigStore {
 		Object.keys(currentApps).forEach(key => {
 			this.apps[key].loaded = currentApps[key].loaded;
 			this.apps[key].available = currentApps[key].available;
+			this.apps[key].fileSize = currentApps[key].fileSize;
 		});
 	};
 }

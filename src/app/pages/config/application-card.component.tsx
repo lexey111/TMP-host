@@ -61,6 +61,12 @@ export const ApplicationCard: React.FC<TApplicationCardProps> = observer(({appNa
 					}
 				</td>
 			</tr>}
+
+			<tr>
+				<td>File size</td>
+				<td>{app.fileSize || 'unknown'}</td>
+			</tr>
+
 			{app.routes?.length > 0 &&
 			<tr>
 				<td>Routes</td>
