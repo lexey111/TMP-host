@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,no-nested-ternary */
 import * as React from 'react';
 import {useCallback} from 'react';
 import {Link} from 'react-router-dom';
@@ -39,32 +39,49 @@ export const ApplicationCard: React.FC<TApplicationCardProps> = observer(({appNa
 				<td>Stylesheet</td>
 				<td>{app.stylesheet}</td>
 			</tr>
-			<tr>
+
+			{!app.online && <tr>
 				<td>Load path</td>
 				<td>{app.path}</td>
-			</tr>
-			{app.online && <tr>
-				<td>Loaded</td>
-				<td>
-					{app.loaded
-						? <span style={{color: 'green'}}>Yes <TcIcon type={'check-circle'}/></span>
-						: <span style={{color: 'maroon'}}>No <TcIcon type={'caution'} filled={true}/></span>
-					}
-				</td>
 			</tr>}
-			{app.online && <tr>
-				<td>Available</td>
-				<td>
-					{app.available
-						? <span style={{color: 'green'}}>Yes <TcIcon type={'check-circle'}/></span>
-						: <span style={{color: 'maroon'}}>No <TcIcon type={'caution'} filled={true}/></span>
-					}
-				</td>
-			</tr>}
+
+			{app.online && <>
+				<tr>
+					<td>Loaded</td>
+					<td>
+						{app.loaded
+							? <span style={{color: 'green'}}>Yes <TcIcon type={'check-circle'}/></span>
+							: <span style={{color: 'maroon'}}>No <TcIcon type={'caution'} filled={true}/></span>
+						}
+					</td>
+				</tr>
+
+				<tr>
+					<td>Available</td>
+					<td>
+						{app.available
+							? <span style={{color: 'green'}}>Yes <TcIcon type={'check-circle'}/></span>
+							: <span style={{color: 'maroon'}}>No <TcIcon type={'caution'} filled={true}/></span>
+						}
+					</td>
+				</tr>
+			</>}
 
 			<tr>
 				<td>File size</td>
 				<td>{app.fileSize || 'unknown'}</td>
+			</tr>
+
+			<tr>
+				<td>Home card{Array.isArray(app.homeCard) ? 's' : ''}</td>
+				<td>
+					{app.homeCard
+						? Array.isArray(app.homeCard)
+							? app.homeCard.map(card => appName + '/' + card).join(', ')
+							: 'yes'
+						: 'no'
+					}
+				</td>
 			</tr>
 
 			{app.routes?.length > 0 &&
