@@ -59,7 +59,7 @@ module.exports = {
 	example_vue: {
 		name: 'Vue JS',
 		dist: 'TMP-sub-vue/dist',
-		homeCard: true,
+		homeCard: ['home', 'chart'],
 		entry: 'example_vue.js',
 		styles: 'example_vue.css'
 	},

@@ -10,7 +10,7 @@ export type TSubApp = {
 	bundle: string
 	path: string
 	stylesheet: string
-	homeCard?: boolean
+	homeCard?: boolean | Array<string>
 	routes?: [
 		{
 			path: string

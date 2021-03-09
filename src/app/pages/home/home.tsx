@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 import * as React from 'react';
 import {useLayoutEffect, useRef, useState} from 'react';
 import {SubApp} from '../../../system/sub-app.component';
@@ -50,27 +51,25 @@ export const HomePage: React.FC = () => {
 				.filter(app => app.available && app.homeCardEnabled)
 				.map(app => {
 
-					console.log('Requested home card from sub-app', app.appName);
+					console.log('Requested home card(s) from sub-app', app.appName);
 
-					return <SubApp
-						subappView={app.appName + '/home'}
-						className={'app-home-card'}
-						silent={true}
-						key={app.appName}/>;
-				})}
+					if (typeof app.homeCard === 'boolean') {
+						console.log('  - single card');
+						return <SubApp
+							subappView={app.appName + '/home'}
+							className={'app-home-card'}
+							silent={true}
+							key={app.appName}/>;
+					}
 
-			{/* dirty hardcoded chart component call */}
-			{getSubAppsWithHomeCard()
-				.filter(app => app.available && app.appName === 'example_vue')
-				.map(app => {
-
-					console.log('Requested home card from Chart sub-app', app.appName);
-
-					return <SubApp
-						subappView={app.appName + '/home2'}
-						className={'app-home-card'}
-						silent={true}
-						key={app.appName}/>;
+					console.log('  - multiple cards,', app.homeCard.join(', '));
+					return <>
+						{app.homeCard.map(cardName => <SubApp
+							subappView={app.appName + '/' + cardName}
+							className={'app-home-card'}
+							silent={true}
+							key={app.appName + '_' + cardName}/>)}
+					</>;
 				})}
 		</div>
 	</div>;
