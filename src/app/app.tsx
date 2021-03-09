@@ -52,6 +52,7 @@ function initApp(): void {
 			const isAppAvailable = event.data.status === 'on';
 
 			if (appName === '@@composer') {
+				bus.broadcast('system.bundleCheck.pulse');
 				if (_lastAvailable !== isAppAvailable) {
 					console.log('Set common state (composer) to ' + (isAppAvailable ? 'on' : 'off'));
 					_lastAvailable = isAppAvailable;

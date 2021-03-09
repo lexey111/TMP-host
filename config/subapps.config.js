@@ -63,4 +63,11 @@ module.exports = {
 		entry: 'example_vue.js',
 		styles: 'example_vue.css'
 	},
+	example_svelte: {
+		name: 'Svelte JS',
+		dist: 'TMP-sub-svelte/dist',
+		homeCard: true,
+		entry: 'example_svelte.js',
+		styles: 'example_svelte.css'
+	},
 };

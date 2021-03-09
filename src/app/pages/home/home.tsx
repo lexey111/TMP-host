@@ -63,13 +63,11 @@ export const HomePage: React.FC = () => {
 					}
 
 					console.log('  - multiple cards,', app.homeCard.join(', '));
-					return <>
-						{app.homeCard.map(cardName => <SubApp
+					return app.homeCard.map(cardName => <SubApp
 							subappView={app.appName + '/' + cardName}
 							className={'app-home-card'}
 							silent={true}
-							key={app.appName + '_' + cardName}/>)}
-					</>;
+							key={app.appName + '_' + cardName}/>);
 				})}
 		</div>
 	</div>;
