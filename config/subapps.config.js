@@ -46,7 +46,7 @@ module.exports = {
 	ui_examples: {
 		name: 'UI Library examples',
 		online: true,
-		homeCard: true,
+		homeCard: false,
 		entry: 'http://localhost:3031/ui_examples.js',
 		styles: 'http://localhost:3031/ui_examples.css',
 		routes: [{
