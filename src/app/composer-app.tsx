@@ -70,6 +70,7 @@ export const ComposerApp: React.FC = () => {
 						<p>
 							Cannot get the config from {COMPOSER.url}/{COMPOSER.config}.
 						</p>
+						<p>&nbsp;</p>
 						<p>
 							<TcButton type={'danger'} onClick={() => window.location.reload()}>
 								<TcIcon type={'sync'} filled={true}/> Try again

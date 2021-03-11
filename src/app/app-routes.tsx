@@ -4,14 +4,14 @@ import {SubAppOnline} from '../system/sub-app-online.component';
 import {SubApp} from '../system/sub-app.component';
 import {ConfigPage} from './pages/config/config';
 import {HomePage} from './pages/home/home';
-import {getActiveSubApps, getSubAppsWithRoutes} from './utils';
+import {getEnabledSubApps, getSubAppsWithRoutes} from './utils';
 
 export function createRoutePage(appName: string, view: string): () => JSX.Element {
 	return function renderRoute() {
 		// return page wrapper
 		console.log('[Render route] for', appName + ':' + view);
 
-		const subApp = getActiveSubApps().find(a => a.appName === appName);
+		const subApp = getEnabledSubApps().find(a => a.appName === appName);
 
 		if (subApp.online) {
 			return <SubAppOnline appName={appName} subappView={view} className={'app-layout-tc'} silent={true}/>;

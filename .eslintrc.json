@@ -58,7 +58,7 @@
 			1
 		],
 		"no-alert": "warn",
-		"no-console": "warn",
+		"no-console": "off",
 		"no-else-return": [
 			"error",
 			{

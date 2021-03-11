@@ -1,3 +1,11 @@
+export type TSubAppRoute = {
+	path: string
+	view: string
+	spineIcon?: string
+	spineTitle?: string
+	position?: 'top' | 'bottom'
+};
+
 export type TSubApp = {
 	online?: boolean // is "online" app
 	loaded?: boolean // bundle was loaded
@@ -11,15 +19,7 @@ export type TSubApp = {
 	path: string
 	stylesheet: string
 	homeCard?: boolean | Array<string>
-	routes?: [
-		{
-			path: string
-			view: string
-			spineIcon?: string
-			spineTitle?: string
-			position?: 'top' | 'bottom'
-		}
-	]
+	routes?: Array<TSubAppRoute>
 };
 
 type TSubAppList = Record<string, TSubApp>;
@@ -33,7 +33,7 @@ export const getSubAppsArray = (): Array<TSubApp> => {
 	return Object.keys(subApps).map(key => subApps[key]);
 };
 
-export const getActiveSubApps = (): Array<TSubApp> => {
+export const getEnabledSubApps = (): Array<TSubApp> => {
 	const availableSubApps = getSubApps();
 	const activeSubApps: Array<TSubApp> = [];
 
@@ -48,13 +48,13 @@ export const getActiveSubApps = (): Array<TSubApp> => {
 };
 
 export const getSubAppsWithHomeCard = (): Array<TSubApp> => {
-	return getActiveSubApps().filter(app => app.homeCard);
+	return getEnabledSubApps().filter(app => app.homeCard);
 };
 
 export const getSubAppsWithRoutes = (): Array<TSubApp> => {
-	return getActiveSubApps().filter(app => app.routes?.length > 0);
+	return getEnabledSubApps().filter(app => app.routes?.length > 0);
 };
 
 export const getOnlineSubApps = (): Array<TSubApp> => {
-	return getActiveSubApps().filter(app => app.online);
+	return getEnabledSubApps().filter(app => app.online);
 };

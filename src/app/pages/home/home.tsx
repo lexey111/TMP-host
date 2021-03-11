@@ -4,6 +4,7 @@ import {useLayoutEffect, useRef, useState} from 'react';
 import {SubApp} from '../../../system/sub-app.component';
 import {getSubAppsWithHomeCard} from '../../utils';
 import './home.less';
+import {HomePageOffline} from './home-offline';
 
 declare const IS_COMPOSER: boolean;
 
@@ -55,12 +56,7 @@ export const HomePage: React.FC = () => {
 	const AppsAvailable = getSubAppsWithHomeCard().filter(app => app.available && app.homeCardEnabled);
 
 	if (!AppsAvailable.length && IS_COMPOSER && startDelayPassed) {
-		return <div className={'app-layout home-page'}>
-			<h1>Welcome to UAC | TMP!</h1>
-			<p>
-				It looks like The Composer now is offline. Please turn it on.
-			</p>
-		</div>;
+		return <HomePageOffline/>;
 	}
 
 	if (!AppsAvailable.length && IS_COMPOSER && !startDelayPassed) {
