@@ -5,7 +5,7 @@ import {ErrorOffline} from './errors/error-offline.component';
 import {SubApp} from './sub-app.component';
 
 export type TSubAppProps = {
-	bundle: string
+	appName: string
 	subappView: string
 	className?: string
 	silent?: boolean
@@ -14,7 +14,7 @@ export type TSubAppProps = {
 export const SubAppOnline: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 	const [version, setVersion] = useState(0);
 
-	const app = getActiveSubApps().find(a => a.appName === props.bundle);
+	const app = getActiveSubApps().find(a => a.appName === props.appName);
 
 	useEffect(() => {
 		// subscribe to online sub-app loaded event
@@ -41,8 +41,12 @@ export const SubAppOnline: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 		return null; // not yet resolved
 	}
 
-	if (app.available === false) {
-		return <ErrorOffline appName={app.appName} data-verisoon={version}/>; // oops
+	if (app.available === false && props.silent) {
+		return null; // oops, but ok
+	}
+
+	if (app.available === false && !props.silent) {
+		return <ErrorOffline appName={app.appName} data-version={version}/>; // oops
 	}
 
 	return <SubApp {...props} data-verisoon={version}/>;

@@ -14,7 +14,7 @@ export function createRoutePage(appName: string, view: string): () => JSX.Elemen
 		const subApp = getActiveSubApps().find(a => a.appName === appName);
 
 		if (subApp.online) {
-			return <SubAppOnline bundle={appName} subappView={view} className={'app-layout-tc'} silent={true}/>;
+			return <SubAppOnline appName={appName} subappView={view} className={'app-layout-tc'} silent={true}/>;
 		}
 		return <SubApp subappView={view} className={'app-layout-tc'} silent={true}/>;
 	};

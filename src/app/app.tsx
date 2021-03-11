@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from 'react';
 import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import {ITmpCore} from 'TMPCore';
 import {ITmpManager} from 'TMPCore/index';
+import {SubAppOnline} from '../system/sub-app-online.component';
 import {SubApp} from '../system/sub-app.component';
 import {createRoutePage, getStaticRoutes} from './app-routes';
 import {getOnlineSubApps, getSubApps, getSubAppsArray} from './utils';
@@ -161,10 +162,16 @@ export const App: React.FC = () => {
 	}
 
 	return <>
-		<SubApp subappView={'topbar/header'} className={'app-topbar'}/>
+		{IS_COMPOSER
+			? <SubAppOnline subappView={'topbar/header'} appName={'topbar'} className={'app-topbar'} silent={true}/>
+			: <SubApp subappView={'topbar/header'} className={'app-topbar'}/>
+		}
 
 		<div className={'activity'}>
-			<SubApp subappView={'spine/sidebar'} className={'app-spine'}/>
+			{IS_COMPOSER
+				? <SubAppOnline subappView={'spine/sidebar'} appName={'spine'} className={'app-spine'} silent={true}/>
+				: <SubApp subappView={'spine/sidebar'} className={'app-spine'}/>
+			}
 
 			<div className={'content-area'}>
 				<div className={'content'}>
