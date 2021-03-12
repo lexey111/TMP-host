@@ -1,13 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,no-console,@typescript-eslint/restrict-plus-operands */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,no-console,@typescript-eslint/restrict-plus-operands,sonarjs/no-duplicate-string */
 import * as React from 'react';
 import {useEffect, useRef, useState} from 'react';
 import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
 import {ITmpCore} from 'TMPCore';
 import {ITmpManager} from 'TMPCore/index';
+
+import {observer} from 'TMPUILibrary/mobx';
 import {SubAppOnline} from '../system/sub-app-online.component';
 import {SubApp} from '../system/sub-app.component';
 import {createRoutePage, getStaticRoutes} from './app-routes';
-import {getOnlineSubApps, getSubApps, getSubAppsArray} from './utils';
+import {ConfigStore} from './store/config.store';
+import {getOnlineSubApps, getSubApps, getSubAppsArray, TSubApp} from './utils';
 
 declare global {
 	interface Window {
@@ -41,7 +44,7 @@ function initApp(): void {
 
 	if (onlineApps.length) {
 		const worker = new Worker('online-health.js');
-		console.log('[Health] Start health check background service' + (IS_COMPOSER ? ' in composer mode' : ''));
+		console.log('[HEALTH] Start health check background service' + (IS_COMPOSER ? ' in composer mode' : ''));
 
 		worker.postMessage({
 			cmd: 'run',
@@ -52,22 +55,31 @@ function initApp(): void {
 			const appName = event.data.app;
 			const isAppAvailable = event.data.status === 'on';
 
+			bus.broadcast('system.bundleCheck.pulse');
+
 			if (appName === '@@composer') {
-				bus.broadcast('system.bundleCheck.pulse');
 				if (_lastAvailable !== isAppAvailable) {
-					console.log('Set common state (composer) to ' + (isAppAvailable ? 'on' : 'off'));
+					console.log('[HEALTH] Set common state (composer) to ' + (isAppAvailable ? 'on' : 'off'));
 					_lastAvailable = isAppAvailable;
 					getSubAppsArray().forEach(app => app.available = isAppAvailable);
 					bus.broadcast('system.bundleLoaded');
+
+					ConfigStore.recheckOnline();
 				}
 				return;
 			}
 
-			const app = onlineApps.find(a => a.appName === appName);
+			const app = (onlineApps as Array<TSubApp>).find(a => a.appName === appName);
 			if (!app || app.available === isAppAvailable) {
 				return;
 			}
+
+			console.log(`[HEALTH] Online sub-app ${app.appName} is ${isAppAvailable ? 'available' : 'off'}`);
+
 			app.available = isAppAvailable;
+			bus.broadcast('system.bundleLoaded');
+
+			ConfigStore.recheckOnline();
 		});
 	}
 }
@@ -89,7 +101,7 @@ function registerSubRoute(
 	console.log('[Routes] Add', url + ':' + view);
 }
 
-export const App: React.FC = () => {
+export const App: React.FC = observer(() => {
 	const history = useHistory();
 	const location = useLocation();
 
@@ -148,7 +160,7 @@ export const App: React.FC = () => {
 			}
 
 			if (value?.message === 'system.bundleLoaded' && value.data) {
-				console.log('Online sub-app loaded:', value.data);
+				console.log('Sub-app loaded:', value.data);
 				const onlineApp = getSubApps()[value.data];
 				if (onlineApp) {
 					onlineApp.loaded = true;
@@ -182,4 +194,4 @@ export const App: React.FC = () => {
 			</div>
 		</div>
 	</>;
-};
+});

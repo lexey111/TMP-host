@@ -22,7 +22,7 @@ export type TSubApp = {
 	routes?: Array<TSubAppRoute>
 };
 
-type TSubAppList = Record<string, TSubApp>;
+export type TSubAppList = Record<string, TSubApp>;
 
 export const getSubApps = (): TSubAppList => {
 	return window.TmpCore.environment.subAppList as unknown as TSubAppList;

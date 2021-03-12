@@ -1,7 +1,9 @@
 /* eslint-disable no-console,@typescript-eslint/no-unsafe-assignment,prefer-destructuring,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
 import * as React from 'react';
-import {useLayoutEffect, useRef, useState} from 'react';
+import {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {ITmpManager} from 'TMPCore/index';
+import {observer} from 'TMPUILibrary/mobx';
+import {ConfigStore} from '../app/store/config.store';
 
 export type TSubAppProps = {
 	subappView: string
@@ -9,91 +11,72 @@ export type TSubAppProps = {
 	silent?: boolean
 };
 
-let id = 1;
+const uniqId = (): string => {
+	return '_' + Math.random().toString(36).substr(2, 9);
+};
 
-export const SubApp: React.FC<TSubAppProps> = (props: TSubAppProps) => {
-	const ref = useRef<HTMLDivElement>();
+export const SubApp: React.FC<TSubAppProps> = observer((props: TSubAppProps) => {
 	const destroying = useRef(false);
-	const [prepared, setPrepared] = useState(false);
-	const mountId = useRef('');
-	const mountedId = useRef('');
+	const [bundle] = useState<string>((props.subappView || '').split('/')[0]);
+	const mountId = useRef<string>('_ms_' + bundle + '_' + uniqId()); // container id
+	const mountedWithId = useRef(''); // successfully mounted container id
 
-	useLayoutEffect(() => {
+	const bundleIsAvailable = ConfigStore.getApp(bundle)?.available;
+
+	useEffect(() => {
 		return () => {
 			destroying.current = true;
-		};
-	}, []);
-
-	useLayoutEffect(() => {
-		return () => {
-			if (mountedId.current) {
-				const TmpManager: ITmpManager = window['TmpManager'];
-				try {
-					TmpManager.unmount(props.subappView, mountedId.current);
-				} catch (e) {
-					//
+			try {
+				const el = document.getElementById(mountedWithId.current);
+				if (el) {
+					const TmpManager: ITmpManager = window['TmpManager'];
+					TmpManager.unmount(props.subappView, mountedWithId.current);
 				}
+			} catch (e) {
+				//
 			}
 		};
 	}, []);
 
 	useLayoutEffect(() => {
-		if (destroying.current) {
-			return;
-		}
-		// allow to mount only if application is known and enabled
-		const subappsAvailable = window['TmpCore']['environment']['subAppList'];
-		const bundleRequested = (props.subappView || '').split('/')[0];
-
-		if (!(Boolean(subappsAvailable[bundleRequested]) && subappsAvailable[bundleRequested].enabled)) {
-			return;
-		}
-
-		mountId.current = 'tmp-container-' + (id++).toString();
-
-		// asynchronous rendering
-		setTimeout(() => {
-			if (destroying.current) {
-				return;
-			}
-			setPrepared(true);
-		}, 20);
-	}, []);
-
-	useLayoutEffect(() => {
-		if (!ref.current || !prepared || destroying.current || mountedId.current) {
+		if (destroying.current || mountedWithId.current || !bundleIsAvailable) {
 			return;
 		}
 
 		const TmpManager: ITmpManager = window['TmpManager'];
 
 		try {
+			const el = document.getElementById(mountId.current);
+			if (!el) {
+				console.log('No element to mount:', mountId.current);
+				return;
+			}
+
 			TmpManager
 				.mount(props.subappView, mountId.current)
 				.then(() => {
-					mountedId.current = mountId.current;
+					mountedWithId.current = mountId.current;
 					return void 0;
 				})
 				.catch(err => {
 					if (props.silent !== true) {
 						console.log('Error on mounting', props.subappView);
 						console.log(err);
-					} else {
-						setPrepared(false);
 					}
 				});
 		} catch {
 			//
 		}
-	}, [ref, prepared]);
+	}, [bundleIsAvailable]);
 
-	if (!prepared) {
+	const app = ConfigStore.getApp(bundle);
+
+	if (!app.available) {
 		return null;
 	}
 
 	return <div
-		ref={ref}
 		id={mountId.current}
 		className={'tmp-subapp-view' + (props.className ? ' ' + props.className : '')}>
 	</div>;
-};
+});

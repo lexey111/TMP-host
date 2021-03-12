@@ -25,7 +25,7 @@ async function doPoll(app) {
 	let result;
 	try {
 		const healthFile = app.bundle.replace(app.appName + '.js', 'status.js');
-		result = await fetch(healthFile);
+		result = await fetch(healthFile, {mode: 'cors'});
 		if (result.status !== 200 && result.status !== 204) {
 			throw new Error('No status file available!');
 		}

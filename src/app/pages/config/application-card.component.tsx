@@ -6,7 +6,7 @@ import {TcIcon, TcSwitch} from 'TMPUILibrary/components';
 
 import {handleStoreValue, observer} from 'TMPUILibrary/mobx';
 import {TSubApp} from '../../utils';
-import {ConfigStore} from './config.store';
+import {ConfigStore} from '../../store/config.store';
 
 type TApplicationCardProps = {
 	appName: string
