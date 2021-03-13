@@ -1,6 +1,7 @@
 export type TSubAppRoute = {
 	path: string
 	view: string
+	title?: string
 	spineIcon?: string
 	spineTitle?: string
 	position?: 'top' | 'bottom'

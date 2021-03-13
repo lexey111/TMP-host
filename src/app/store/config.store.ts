@@ -26,21 +26,25 @@ function getHomeCards(apps: TSubAppList): Array<string> {
 	return homeCards;
 }
 
-
 export class CConfigStore {
 	public _changed = false; // add this field to use with handleStoreValue auto-tracking
 	public apps = getSubApps(); // object {}
+
+	public currentRoute = '';
 
 	constructor() {
 		makeObservable(this, {
 			apps: observable,
 			_changed: observable,
+			currentRoute: observable,
+
 			appArray: computed,
 			homeCards: computed,
 
 			loadState: action,
 			saveState: action,
 			recheckOnline: action,
+			setRoute: action,
 		});
 	}
 
@@ -86,6 +90,10 @@ export class CConfigStore {
 			this.apps[key].available = currentApps[key].available;
 			this.apps[key].fileSize = currentApps[key].fileSize;
 		});
+	};
+
+	public setRoute = (route: string): void => {
+		this.currentRoute = route;
 	};
 }
 

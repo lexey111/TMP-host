@@ -6,6 +6,7 @@ import {ITmpCore} from 'TMPCore';
 import {ITmpManager} from 'TMPCore/index';
 
 import {observer} from 'TMPUILibrary/mobx';
+import {Breadcrumbs} from '../system/breadcrumbs/breadcrumbs.component';
 import {SubAppOnline} from '../system/sub-app-online.component';
 import {SubApp} from '../system/sub-app.component';
 import {getStaticRoutes} from './app-routes';
@@ -147,6 +148,7 @@ export const App: React.FC = observer(() => {
 			}
 
 			<div className={'content-area'}>
+				<Breadcrumbs />
 				<div className={'content'}>
 					<Switch>
 						{APPRoutes.current}

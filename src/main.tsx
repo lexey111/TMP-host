@@ -12,7 +12,6 @@ I18nService.getAvailableLocales();
 void I18nService.getLocaleByCode('fallback');
 void I18nService.getFullLocaleData('fallback');
 
-console.log('1');
 declare const IS_COMPOSER;
 if (IS_COMPOSER) {
 	startComposerApp();

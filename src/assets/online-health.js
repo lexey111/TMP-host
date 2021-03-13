@@ -25,8 +25,11 @@ async function doPoll(app) {
 	let result;
 	try {
 		const healthFile = app.bundle.replace(app.appName + '.js', 'status.js');
+
 		result = await fetch(healthFile, {mode: 'cors'});
+
 		if (result.status !== 200 && result.status !== 204) {
+			// noinspection ExceptionCaughtLocallyJS
 			throw new Error('No status file available!');
 		}
 	} catch {
@@ -41,10 +44,8 @@ async function doPoll(app) {
 
 function startPolling(apps) {
 	console.log('Start polling for online sub-apps health check...', apps);
-	apps.forEach(app => {
-		// very straightforward polling algorithm
-		// just try to request app.entry file
 
+	apps.forEach(app => {
 		const poll = setInterval(() => doPoll(app), 10 * 1000); // each 10s
 		Polls.push({
 			bundle: app.bundle,
