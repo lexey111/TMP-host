@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,no-console,@typescript-eslint/restrict-plus-operands,sonarjs/no-duplicate-string */
 import * as React from 'react';
 import {useEffect, useRef, useState} from 'react';
-import {Route, Switch, useHistory, useLocation} from 'react-router-dom';
+import {Switch, useHistory, useLocation} from 'react-router-dom';
 import {ITmpCore} from 'TMPCore';
 import {ITmpManager} from 'TMPCore/index';
 
 import {observer} from 'TMPUILibrary/mobx';
 import {SubAppOnline} from '../system/sub-app-online.component';
 import {SubApp} from '../system/sub-app.component';
-import {createRoutePage, getStaticRoutes} from './app-routes';
+import {getStaticRoutes} from './app-routes';
 import {ConfigStore} from './store/config.store';
 import {getOnlineSubApps, getSubApps, getSubAppsArray, TSubApp} from './utils';
 
@@ -43,7 +43,7 @@ function initApp(): void {
 		: getOnlineSubApps();
 
 	if (onlineApps.length) {
-		const worker = new Worker('online-health.js');
+		const worker = new Worker('/online-health.js');
 		console.log('[HEALTH] Start health check background service' + (IS_COMPOSER ? ' in composer mode' : ''));
 
 		worker.postMessage({
@@ -84,23 +84,6 @@ function initApp(): void {
 	}
 }
 
-function registerSubRoute(
-	{
-		Routes,
-		appName,
-		url,
-		view
-	}: { Routes: Array<JSX.Element>; appName: string; url: string; view: string }): void {
-
-	const newRoute = <Route
-		exact path={'/' + url}
-		key={url}
-		render={createRoutePage(appName, view)}/>;
-
-	Routes.splice(Routes.length - 2, 0, newRoute);
-	console.log('[Routes] Add', url + ':' + view);
-}
-
 export const App: React.FC = observer(() => {
 	const history = useHistory();
 	const location = useLocation();
@@ -133,29 +116,6 @@ export const App: React.FC = observer(() => {
 			if (value?.message === 'system.navigate') {
 				console.log('[Navigate] Request:', value.data);
 				history.push(value.data);
-				return;
-			}
-
-			if (value?.message === 'system.registerRoutes' && value?.data.appName && Array.isArray(value.data?.routes)) {
-				console.log('[Routes] Registration:', value.data);
-				const routesToRegister: Array<{ url: string; view: string }> = value.data.routes;
-
-				routesToRegister
-					.forEach(routeItem => {
-						registerSubRoute({
-							Routes: APPRoutes.current,
-							appName: value.data.appName,
-							url: routeItem.url,
-							view: routeItem.view
-						});
-
-						if (location.pathname === '/' + routeItem.url) {
-							console.log('[Postponed route update]', routeItem.url);
-							history.push('/');
-							// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-							setTimeout(() => history.push(location.pathname), 10);
-						}
-					});
 				return;
 			}
 

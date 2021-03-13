@@ -342,11 +342,12 @@ module.exports = (env, args) => {
 			historyApiFallback: true,
 			compress: false,
 			port: 3030,
+			publicPath: '/',
 			contentBase: outPath,
 			hot: true,
 			inline: true,
-			stats: 'minimal',
-			clientLogLevel: 'warning'
+			stats: 'normal',
+			clientLogLevel: 'error'
 		}
 	};
 

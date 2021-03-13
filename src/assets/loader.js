@@ -1,4 +1,4 @@
-console.log('[-] Loader ready');
+console.log('[>] Loader ready');
 
 window['__contentRoot'] = '';
 window['__apiRoot'] = '';
@@ -15,7 +15,7 @@ window['__angularReadyPromise'] = new Promise(function (resolve) {
 
 function loadSvgSprite() {
 	const xhr = new XMLHttpRequest();
-	xhr.open('get', 'images/tc-icons-sprite.svg', true);
+	xhr.open('get', '/images/tc-icons-sprite.svg', true);
 	xhr.onload = function () {
 		const div = document.createElement('div');
 		div.innerHTML = this.responseText;
@@ -27,7 +27,7 @@ function loadSvgSprite() {
 function loadTmpCore() {
 	let fragment = document.createDocumentFragment();
 
-	const script = createScript('scripts/tmp_core.js', initMainApp);
+	const script = createScript('/scripts/tmp_core.js', initMainApp);
 
 	fragment.appendChild(script);
 	document.body.appendChild(fragment);
@@ -37,10 +37,11 @@ function loadTmpCore() {
 function loadMainApp() {
 	let fragment = document.createDocumentFragment();
 
-	const script = createScript('app.js', () => {
+	const script = createScript('/app.js', () => {
 		document.querySelector('#shell').classList.remove('loading');
 		console.log('Host App Started.');
 	});
+
 	fragment.appendChild(script);
 	document.body.appendChild(fragment);
 	fragment = null;
@@ -56,29 +57,14 @@ function createScript(src, onLoad) {
 }
 
 function initMainApp() {
-	// // for localization engine
-	// window['TmpCore'].environment.contentRoot = '.';
-	// window['TmpCore'].environment.localisationBaseFolder = 'i18n/data';
-	// window['TmpCore'].environment.availableLocales = [
-	// 	{code: 'en-GB', _hash: 'none'},
-	// 	{code: 'ua-UA', _hash: 'none'}
-	// ];
-
 	window['TmpCorePrePromise'].then(() => {
 		// start TMP (inform it host is ready)
 		window['__angularReadyResolver'](); // mimic angular part is ready
+
 		return window['TmpCorePromise'].then(() => {
 			console.log('Loading main application...');
 			loadMainApp();
 		});
-		// return loadSubAppsList().then(() => {
-		// 	// start TMP (inform it host is ready)
-		// 	window['__angularReadyResolver'](); // mimic angular part is ready
-		// 	window['TmpCorePromise'].then(() => {
-		// 		console.log('Loading main application...');
-		// 		loadMainApp();
-		// 	});
-		// })
 	});
 }
 
