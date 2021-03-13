@@ -125,6 +125,7 @@ export const App: React.FC = observer(() => {
 				if (onlineApp) {
 					onlineApp.loaded = true;
 				}
+				ConfigStore.recheckOnline();
 			}
 		});
 	}, []);

@@ -50,7 +50,7 @@ module.exports = {
 		port: 3031,
 		routes: [
 			{
-				path: 'ui_examples/cr_basic', // must be only single-level (PoC restriction)
+				path: 'ui_examples/cr_basic',
 				view: 'ui_examples/controlRoomBasic',
 			},
 			{
@@ -111,6 +111,7 @@ module.exports = {
 				path: 'ui_examples/listing_details',
 				view: 'ui_examples/listingDetails',
 			},
+			// must be the last one!
 			{
 				path: 'ui_examples', // url: ...site.com/ui_examples
 				view: 'ui_examples/controlRoom', // bundleName/viewName

@@ -15,7 +15,7 @@ export const SubAppOnline: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 	const [version, setVersion] = useState(0);
 
 	const app = useRef<TSubApp>(getEnabledSubApps().find(a => a.appName === props.appName));
-	const lastAvailable = useRef<boolean>(app?.current.available);
+	const lastAvailable = useRef<boolean>(app?.current?.available);
 	const updateTimer = useRef(void 0);
 
 	useEffect(() => {
@@ -27,7 +27,7 @@ export const SubAppOnline: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 				return;
 			}
 
-			if (app.current.available !== lastAvailable.current) {
+			if (app?.current?.available !== lastAvailable.current) {
 				lastAvailable.current = app.current.available;
 
 				clearTimeout(updateTimer.current);
@@ -43,7 +43,7 @@ export const SubAppOnline: React.FC<TSubAppProps> = (props: TSubAppProps) => {
 		};
 	}, []);
 
-	if (!app) {
+	if (!app || !app?.current) {
 		return null; // unknown or disabled app
 	}
 

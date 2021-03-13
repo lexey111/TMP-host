@@ -7,7 +7,6 @@ import {ConfigStore} from '../../store/config.store';
 import {ApplicationCard} from './application-card.component';
 
 export const ConfigPage: React.FC = observer(() => {
-
 	const handleApply = useCallback(() => {
 		ConfigStore.saveState();
 		window.location.href = '/';
@@ -15,7 +14,7 @@ export const ConfigPage: React.FC = observer(() => {
 
 	return <div className={'app-layout app-single-page'}>
 		<div className={'app-single-page-content'}>
-			<h1>Available applications</h1>
+			<h1>Available applications [{ConfigStore.appArray.length}]</h1>
 
 			<div className={'application-cards '}>
 				{ConfigStore.appArray.map(app => <ApplicationCard appName={app.appName} key={app.appName}/>)}
